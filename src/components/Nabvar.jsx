@@ -5,7 +5,7 @@ function Navbar() {
     <nav className="bg-zinc-900 text-white py-3 mb-2">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/">
-          <h3 className="text-3xl">Concep Store</h3>
+          <h3 className="text-3xl">Concept Store</h3>
         </Link>
 
         <ul>

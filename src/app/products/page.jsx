@@ -3,7 +3,7 @@ import conn from '@/libs/mysql';
 
 // Función para cargar productos desde la base de datos
 async function loadProducts() {
-  const [products] = await conn.query('SELECT * FROM product');
+  const [products] = await conn.query ('SELECT * FROM product');
   return products;
 }
 
