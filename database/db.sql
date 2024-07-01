@@ -6,3 +6,43 @@ CREATE TABLE product(
     price DECIMAL(10,2),
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--Crear la tabla Role
+CREATE TABLE Role (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Crear la tabla User
+CREATE TABLE User (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255),
+    password VARCHAR(255) NOT NULL,
+    rol_id INT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (rol_id) REFERENCES Role(role_id)
+);
+
+-- Crear trigger para actualizar el campo updatedAt en la tabla User
+DELIMITER //
+CREATE TRIGGER trgUserUpdatedAt
+BEFORE UPDATE ON User
+FOR EACH ROW
+BEGIN
+    SET NEW.updatedAt = CURRENT_TIMESTAMP;
+END; //
+DELIMITER ;
+
+-- Crear trigger para actualizar el campo updatedAt en la tabla Role
+DELIMITER //
+CREATE TRIGGER trgRoleUpdatedAt
+BEFORE UPDATE ON Role
+FOR EACH ROW
+BEGIN
+    SET NEW.updatedAt = CURRENT_TIMESTAMP;
+END; //
+DELIMITER ;
