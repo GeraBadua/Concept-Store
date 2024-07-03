@@ -1,6 +1,8 @@
 import Navbar from "@/components/Nabvar";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { UserProvider } from '@auth0/nextjs-auth0/client';
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +17,8 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <Navbar />
         <div className="h-[calc(100vh-5rem)] container mx-auto">{children}</div>
+        <UserProvider>
+    </UserProvider>
       </body>
     </html>
   );

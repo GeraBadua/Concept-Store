@@ -18,6 +18,7 @@ async function ProductsPage() {
       {products.map(product => (
         <ProductCard key={product.id_product} product={product} />
       ))}
+      <a href="/api/auth/logout">Logout</a>
     </div>
   );
 }
