@@ -1,23 +1,26 @@
+'use client';
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-function Navbar() {
+const Navbar = () => {
+  const pathname = usePathname();
+  const isOnProductsPage = pathname === "/products";
+
   return (
-    <nav className="bg-zinc-900 text-white py-3 mb-2">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link href="/">
-          <h3 className="text-3xl">Concept Store</h3>
+    <header className="w-full p-4 bg-gray-800 shadow-lg flex justify-between items-center">
+      <h1 className="text-3xl font-bold text-white">Concept Store</h1>
+      {isOnProductsPage ? (
+        <Link href="/" className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          Logout
         </Link>
-
-        <ul>
-          <li>
-            <Link href="/new" className="text-sky-500 hover:text-sky-400">
-              New
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+      ) : (
+        <Link href="/products" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Login
+        </Link>
+      )}
+    </header>
   );
-}
+};
 
 export default Navbar;
