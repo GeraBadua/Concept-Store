@@ -1,24 +1,40 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch('/api/admin_auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
-    console.log(data);
+    setError('');
+
+    try {
+      const response = await fetch('/api/admin_auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        router.push('/products');
+      } else {
+        setError(data.message || 'Invalid email or password');
+      }
+    } catch (error) {
+      setError('An error occurred. Please try again.');
+    }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleLogin}>
         <input
           type="email"
@@ -26,6 +42,7 @@ export default function LoginForm({ onSwitch }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
+          required
         />
         <input
           type="password"
@@ -33,13 +50,14 @@ export default function LoginForm({ onSwitch }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
+          required
         />
-        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
+        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
           Login
         </button>
       </form>
       <p className="mt-4 text-center">
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <a onClick={onSwitch} className="text-blue-500 cursor-pointer">
           Register here
         </a>
