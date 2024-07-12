@@ -13,7 +13,25 @@ const Home = () => {
           <p className="text-gray-700">Production Products</p>
           
         </Link>
-        {/* Agrega más cards aquí según sea necesario */}<a href="/api/auth/login">Login</a>
+        {/* Agrega más cards aquí según sea necesario */}<a style={{
+          backgroundColor: 'blue',
+          color: 'white',
+          textAlign: 'center',
+          border: 'none',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          cursor: 'pointer'
+        }}
+        href="/api/auth/login">Login</a>
+        <a style={{
+          backgroundColor: 'blue',
+          color: 'white',
+          textAlign: 'center',
+          border: 'none',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          cursor: 'pointer'
+        }}  href="/api/auth/logout">Logout</a>
       </div>
     </div>
   );
