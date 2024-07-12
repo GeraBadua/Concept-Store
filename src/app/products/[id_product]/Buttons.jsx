@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 function Buttons({ productId }) {
   const router = useRouter();
 
+  const handleClose = () => {
+    router.push("/products");
+  };
+
   return (
     <div className="flex gap-x-2 justify-end mt-2">
       <button
@@ -29,6 +33,12 @@ function Buttons({ productId }) {
       >
         Edit
       </button>
+      <button
+          onClick={handleClose}
+          className="text-white bg-gray-500 hover:bg-gray-700 py-2 px-3 rounded"
+        >
+          X
+        </button>
     </div>
   );
 }

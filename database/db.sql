@@ -4,7 +4,11 @@ CREATE TABLE product(
     description VARCHAR(200),
     image VARCHAR(200),
     price DECIMAL(10,2),
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    category VARCHAR(100),
+    brand varchar(100),
+    supplier varchar(100),
+    createdAt timestamp,
+    updated_at timestamp
 );
 
 --Crear la tabla Role
@@ -45,4 +49,16 @@ FOR EACH ROW
 BEGIN
     SET NEW.updatedAt = CURRENT_TIMESTAMP;
 END; //
+DELIMITER ;
+
+-- Crear trigger para actualizar el campo updatedAt en la tabla Product
+DELIMITER //
+
+CREATE TRIGGER trgProductUpdatedAt
+BEFORE UPDATE ON product
+FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END; //
+
 DELIMITER ;

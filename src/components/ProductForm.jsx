@@ -16,18 +16,20 @@ function ProductForm() {
 
   useEffect(() => {
     if (params.id_product) {
-      axios.get(`/api/products/${params.id_product}`).then((res) => {
-        const productData = res.data[0]; // Acceder al primer objeto del array
-        console.log("Product data fetched:", productData);
-        setProduct({
-          name: productData.name || "",
-          price: productData.price || "",
-          description: productData.description || "",
-          image: productData.image || "", // Actualiza la imagen del estado
+      axios.get(`/api/products/${params.id_product}`)
+        .then((res) => {
+          const productData = res.data[0]; // Acceder al primer objeto del array
+          console.log("Product data fetched:", productData);
+          setProduct({
+            name: productData.name || "",
+            price: productData.price || "",
+            description: productData.description || "",
+            image: productData.image || "", // Actualiza la imagen del estado
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching product data:", error);
         });
-      }).catch((error) => {
-        console.error("Error fetching product data:", error);
-      });
     }
   }, [params.id_product]);
 
@@ -77,90 +79,96 @@ function ProductForm() {
     }
   };
 
+  const handleClose = () => {
+    router.push("/products");
+  };
+
   return (
-    <div className="flex">
-      <form
-        className="bg-white shadow-md rounded-md px-8 pt-6 pb-8 mb-4"
-        onSubmit={handleSubmit}
-        ref={form}
-      >
-        <label
-          htmlFor="name"
-          className="block text-gray-700 text-sm font-bold mb-2"
+      <div className="relative bg-white shadow-md rounded-md px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+        <button
+          onClick={handleClose}
+          className="absolute top-2 right-2 text-black rounded-full w-6 h-6 flex items-center justify-center"
         >
-          Product Name:
-        </label>
-        <input
-          name="name"
-          type="text"
-          placeholder="name"
-          onChange={handleChange}
-          value={product.name}
-          className="shadow appearance-none border rounded w-full py-2 px-3"
-          autoFocus
-        />
+          X
+        </button>
+        <form onSubmit={handleSubmit} ref={form}>
+          <label
+            htmlFor="name"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Product Name:
+          </label>
+          <input
+            name="name"
+            type="text"
+            placeholder="name"
+            onChange={handleChange}
+            value={product.name}
+            className="shadow appearance-none border rounded w-full py-2 px-3"
+            autoFocus
+          />
 
-        <label
-          htmlFor="price"
-          className="block text-gray-700 text-sm font-bold mb-2"
-        >
-          Product Price:
-        </label>
-        <input
-          name="price"
-          type="text"
-          placeholder="00.00"
-          onChange={handleChange}
-          value={product.price}
-          className="shadow appearance-none border rounded w-full py-2 px-3"
-        />
+          <label
+            htmlFor="price"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Product Price:
+          </label>
+          <input
+            name="price"
+            type="text"
+            placeholder="00.00"
+            onChange={handleChange}
+            value={product.price}
+            className="shadow appearance-none border rounded w-full py-2 px-3"
+          />
 
-        <label
-          htmlFor="description"
-          className="block text-gray-700 text-sm font-bold mb-2"
-        >
-          Product Description:
-        </label>
-        <textarea
-          name="description"
-          rows={3}
-          placeholder="description"
-          onChange={handleChange}
-          value={product.description}
-          className="shadow appearance-none border rounded w-full py-2 px-3"
-        />
+          <label
+            htmlFor="description"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Product Description:
+          </label>
+          <textarea
+            name="description"
+            rows={3}
+            placeholder="description"
+            onChange={handleChange}
+            value={product.description}
+            className="shadow appearance-none border rounded w-full py-2 px-3"
+          />
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Product Image:
-        </label>
-        <div className="flex items-center mb-4">
-          {product.image && (
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Product Image:
+          </label>
+          <div className="flex items-center mb-4">
+            {product.image && (
+              <img
+                className="w-24 h-24 object-cover rounded"
+                src={product.image}
+                alt="Product Image"
+              />
+            )}
+            <input
+              type="file"
+              className="ml-4"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          {file && (
             <img
-              className="w-24 h-24 object-cover rounded"
-              src={product.image}
-              alt="Product Image"
+              className="w-96 object-contain mx-auto my-4"
+              src={URL.createObjectURL(file)}
+              alt="Preview"
             />
           )}
-          <input
-            type="file"
-            className="ml-4"
-            onChange={handleFileChange}
-          />
-        </div>
 
-        {file && (
-          <img
-            className="w-96 object-contain mx-auto my-4"
-            src={URL.createObjectURL(file)}
-            alt="Preview"
-          />
-        )}
-
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          {params.id_product ? "Update Product" : "Create Product"}
-        </button>
-      </form>
-    </div>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            {params.id_product ? "Update Product" : "Create Product"}
+          </button>
+        </form>
+      </div>
   );
 }
 

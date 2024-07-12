@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export default function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState('');
@@ -12,6 +13,11 @@ export default function LoginForm({ onSwitch }) {
     e.preventDefault();
     setError('');
 
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/admin_auth/login', {
         method: 'POST',
@@ -22,12 +28,15 @@ export default function LoginForm({ onSwitch }) {
       const data = await response.json();
 
       if (response.ok) {
+        Cookies.set('token', data.token, { expires: 1 });
+        alert('Login successful!, Welcome to the store.');
         router.push('/products');
       } else {
-        setError(data.message || 'Invalid email or password');
+        setError(data.message || 'Email or password is incorrect. Please try again.');
       }
     } catch (error) {
-      setError('An error occurred. Please try again.');
+      console.error('Login error', error);
+      setError('An error occurred, please try again later.');
     }
   };
 
