@@ -5,20 +5,53 @@ export default function RegisterForm({ onSwitch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [role, setRole] = useState('2'); // Default to 'Seller'
+
+  const validateForm = () => {
+    if (!email || !password || !name) {
+      setError('All fields are required');
+      return false;
+    }
+    setError('');
+    return true;
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await fetch('/api/admin_auth/register', {
+    if (!validateForm()) return;
+
+    try {
+      const response = await fetch('/api/admin_auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
-      });      
-    const data = await response.json();
-    console.log(data);
+        body: JSON.stringify({ email, password, name, role}),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess('Register successful!'); 
+        setError('');
+        setTimeout(() => {
+          onSwitch();
+        }, 3000);
+      } else {
+        console.error('Register failed', data.message);
+        setError(data.message || 'Unknown error');
+        setSuccess('');
+      }
+    } catch (error) {
+      console.error('Register error', error);
+      setError('An error occurred, please try again later.');
+      setSuccess('');
+    }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+      {error && <p className="text-red-500">{error}</p>}
+      {success && <p className="text-green-500">{success}</p>}
       <h2 className="text-2xl font-bold mb-4">Register</h2>
       <form onSubmit={handleRegister}>
         <input
@@ -42,6 +75,14 @@ export default function RegisterForm({ onSwitch }) {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
         />
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+        >
+          <option value="1">Admin</option>
+          <option value="2">Seller</option>
+        </select>
         <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
           Register
         </button>
