@@ -6,7 +6,7 @@ function Buttons({ productId }) {
   const router = useRouter();
 
   const handleClose = () => {
-    router.push("/products");
+    router.push("/products_seller");
   };
 
   return (
@@ -17,7 +17,7 @@ function Buttons({ productId }) {
           if (confirm("are you sure you want to delete this prodcut?")) {
             const res = await axios.delete("/api/products/" + productId);
             if (res.status === 204) {
-              router.push("/products");
+              router.push("/products_seller");
               router.refresh();
             }
           }

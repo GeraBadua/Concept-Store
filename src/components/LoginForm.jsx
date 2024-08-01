@@ -1,7 +1,9 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 export default function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState('');
@@ -28,9 +30,23 @@ export default function LoginForm({ onSwitch }) {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set('token', data.token, { expires: 1 });
+        Cookies.set('token', data.token, { expires: 1, secure: process.env.NODE_ENV === 'production', path: '/', sameSite: 'None' });
+        
+        // Decodifica el token para obtener el rol
+        const decoded = jwtDecode(data.token);
+        const role = decoded.rol_id;
+
+        // Redirige al usuario basado en su rol
+        if (role === 1) {
+          router.push('/products');
+        } else if (role === 2) {
+          router.push('/products_seller');
+        } else {
+          // Redirigir a una página por defecto si el rol no coincide
+          router.push('/');
+        }
+
         alert('Login successful!, Welcome to the store.');
-        router.push('/products');
       } else {
         setError(data.message || 'Email or password is incorrect. Please try again.');
       }

@@ -32,7 +32,7 @@ const AuthenticatedRoute = ({ children, allowedRoles }) => {
         router.push('/');
       }
     }
-  }, [router]);
+  }, [allowedRoles, router]);
 
   return <>{children}</>;
 };

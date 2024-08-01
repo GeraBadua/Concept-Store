@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
+import Image from "next/image";
 
 function ProductForm() {
   const [product, setProduct] = useState({
@@ -142,13 +143,15 @@ function ProductForm() {
             Product Image:
           </label>
           <div className="flex items-center mb-4">
-            {product.image && (
-              <img
-                className="w-24 h-24 object-cover rounded"
-                src={product.image}
-                alt="Product Image"
-              />
-            )}
+          {product.image && (
+            <Image
+              className="w-24 h-24 object-cover rounded"
+              src={product.image}
+              width={96} // Añadir el ancho adecuado
+              height={96} // Añadir la altura adecuada
+              alt="Product Image"
+            />
+          )}
             <input
               type="file"
               className="ml-4"
@@ -157,9 +160,11 @@ function ProductForm() {
           </div>
 
           {file && (
-            <img
+            <Image
               className="w-96 object-contain mx-auto my-4"
               src={URL.createObjectURL(file)}
+              width={384} // Añadir el ancho adecuado
+              height={384} // Añadir la altura adecuada
               alt="Preview"
             />
           )}

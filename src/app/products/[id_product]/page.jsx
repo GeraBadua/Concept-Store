@@ -1,6 +1,7 @@
 import AuthenticatedRoute from "@/components/AuthenticatedRoute";
 import Buttons from "./Buttons";
 import conn from "@/libs/mysql";
+import Image from "next/image";
 
 async function loadProduct(productId) {
   const [data] = await conn.query('SELECT * FROM product WHERE id_product = ?', [
@@ -27,9 +28,15 @@ async function ProductPage({ params }) {
           <h4 className="text-4xl font-bold">{productData.price}$</h4>
           <p className="text-slate-700">{productData.description}</p>
           <Buttons productId={productData.id_product} />
-        </div>
-        {productData.image && (
-          <img src={productData.image} className="w-1/3" alt={productData.name} />
+         </div>
+      {productData.image && (
+        <Image
+            src={productData.image}
+            width={300} // Añadir el ancho adecuado
+            height={300} // Añadir la altura adecuada
+            className="w-1/3"
+            alt={productData.name}
+          />
         )}
       </div>
     </section>

@@ -37,12 +37,12 @@ export async function POST(request) {
       { status: 200 }
     );
     response.cookies.set('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'strict',
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production', // Solo en producción debería ser `true`
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Usa 'None' en producción con HTTPS, 'Lax' para desarrollo
       maxAge: 3600,
       path: '/',
-    });
+    });   
 
     return response;
   } catch (error) {
