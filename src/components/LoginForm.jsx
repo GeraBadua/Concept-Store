@@ -2,19 +2,22 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import Swal from 'sweetalert2';
 
 export default function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
 
     if (!email.trim() || !password.trim()) {
-      setError('Please enter your email and password.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Input Error',
+        text: 'Please enter your email and password.',
+      });
       return;
     }
 
@@ -29,21 +32,33 @@ export default function LoginForm({ onSwitch }) {
 
       if (response.ok) {
         Cookies.set('token', data.token, { expires: 1 });
-        alert('Login successful!, Welcome to the store.');
-        router.push('/products');
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Successful',
+          text: 'Welcome to the store.',
+        }).then(() => {
+          router.push('/products');
+        });
       } else {
-        setError(data.message || 'Email or password is incorrect. Please try again.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: data.message || 'Email or password is incorrect. Please try again.',
+        });
       }
     } catch (error) {
       console.error('Login error', error);
-      setError('An error occurred, please try again later.');
+      Swal.fire({
+        icon: 'error',
+        title: 'An Error Occurred',
+        text: 'Please try again later.',
+      });
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleLogin}>
         <input
           type="email"

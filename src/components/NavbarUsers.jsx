@@ -28,17 +28,7 @@ const Navbar = () => {
         <h1 className="text-3xl font-bold text-white">Concept Store</h1>
       </Link>
     
-      {isAuthenticated ? (
-        <button onClick={handleLogout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-          Logout
-        </button>
-      ) : (
-        <Link href="/admin_auth" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Login
-        </Link>
-      )}
-
-    
+      <Auth0Log /> {/* Aquí es donde usas el componente Auth0Log */}
 
     </header>
   );

@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Link from "next/link"
 
-const LandingPage = () => {
+
+const UserMain = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       <main className="flex-grow container mx-auto p-8">
@@ -24,7 +24,7 @@ const LandingPage = () => {
               </div>
             ))}
           </div>
-          <p className="text-m mb-8 mx-auto text-center">If you are not an administrator click <Link href="/UsersMain">HERE</Link> to go to the USERS page.</p>
+          <p className="text-m mb-8 mx-auto text-center">If you are not a user click <a href="../components/LandingPage">HERE</a> to go to the ADMINISTRATOR page.</p>
         </section>
       </main>
       <footer className="w-full p-4 bg-gray-800 text-center mt-auto">
@@ -34,4 +34,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default UserMain;

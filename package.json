@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
+    "@sweetalert2/themes": "^5.0.17",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
@@ -19,7 +21,9 @@
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
-    "serverless-mysql": "^1.5.5"
+    "serverless-mysql": "^1.5.5",
+    "sweetalert": "^2.1.2",
+    "sweetalert2": "^11.12.3"
   },
   "devDependencies": {
     "eslint": "^8",
