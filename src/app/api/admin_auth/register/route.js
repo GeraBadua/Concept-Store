@@ -30,7 +30,7 @@ export async function POST(request) {
     
     console.log('Inserting new user into database');
     const [result] = await conn.query(
-      'INSERT INTO User (email, password, name, rol_id) VALUES (?, ?, ?, ?)',
+      'INSERT INTO User (email, password, name, role_id) VALUES (?, ?, ?, ?)',
       [email, hashedPassword, name, role]
     );
 
