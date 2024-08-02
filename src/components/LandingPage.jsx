@@ -13,15 +13,16 @@ const LandingPage = () => {
           <p className="text-xl mb-8">We offer the latest mobile technology from top brands such as Apple, Samsung, Xiaomi, Huawei, and more.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {['Apple', 'Samsung', 'Xiaomi', 'Huawei'].map((brand) => (
-              <div key={brand} className="relative w-full h-64 bg-white rounded-lg shadow-lg overflow-hidden flex items-center justify-center">
-                <Image 
-                  src={`/images/${brand}.jpeg`} 
-                  alt={brand} 
-                  layout="fill"
-                  objectFit="contain"
-                  className="p-4"
-                />
-              </div>
+            <div key={brand} className="relative w-full h-64 bg-white rounded-lg shadow-lg overflow-hidden flex items-center justify-center">
+              <Image
+                src={`/images/${brand}.jpeg`}
+                alt={brand}
+                width={256} // Añadir el ancho adecuado
+                height={256} // Añadir la altura adecuada
+                priority // Priorizar
+                className="p-4 object-contain"
+              />
+            </div>
             ))}
           </div>
           <p className="text-m mb-8 mx-auto text-center">If you are not an administrator click <Link href="/UsersMain">HERE</Link> to go to the USERS page.</p>

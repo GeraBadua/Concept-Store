@@ -5,9 +5,9 @@ import bcrypt from 'bcrypt';
 export async function POST(request) {
   try {
     console.log('Processing registration request');
-    const { email, password, name } = await request.json();
+    const { email, password, name, role } = await request.json();
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !role) {
       console.log('Validation error: missing fields');
       return NextResponse.json(
         { message: 'All fields are required' },
@@ -30,8 +30,8 @@ export async function POST(request) {
     
     console.log('Inserting new user into database');
     const [result] = await conn.query(
-      'INSERT INTO User (email, password, name, rol_id) VALUES (?, ?, ?, ?)',
-      [email, hashedPassword, name, 1]
+      'INSERT INTO User (email, password, name, role_id) VALUES (?, ?, ?, ?)',
+      [email, hashedPassword, name, role]
     );
 
     if (result.affectedRows === 1) {

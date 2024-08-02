@@ -1,8 +1,9 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import Swal from 'sweetalert2';
+import { jwtDecode } from 'jwt-decode';
 
 export default function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState('');
@@ -21,6 +22,11 @@ export default function LoginForm({ onSwitch }) {
       return;
     }
 
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
     try {
       const response = await fetch('/api/admin_auth/login', {
         method: 'POST',
@@ -31,28 +37,29 @@ export default function LoginForm({ onSwitch }) {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set('token', data.token, { expires: 1 });
-        Swal.fire({
-          icon: 'success',
-          title: 'Login Successful',
-          text: 'Welcome to the store.',
-        }).then(() => {
+        Cookies.set('token', data.token, { expires: 1, secure: process.env.NODE_ENV === 'production', path: '/', sameSite: 'None' });
+        
+        // Decodifica el token para obtener el role
+        const decoded = jwtDecode(data.token);
+        const role = decoded.role_id;
+
+        // Redirige al usuario basado en su rol
+        if (role === 1) {
           router.push('/products');
-        });
+        } else if (role === 2) {
+          router.push('/products_seller');
+        } else {
+          // Redirigir a una página por defecto si el rol no coincide
+          router.push('/');
+        }
+
+        alert('Login successful!, Welcome to the store.');
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Login Failed',
-          text: data.message || 'Email or password is incorrect. Please try again.',
-        });
+        setError(data.message || 'Email or password is incorrect. Please try again.');
       }
     } catch (error) {
       console.error('Login error', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'An Error Occurred',
-        text: 'Please try again later.',
-      });
+      setError('An error occurred, please try again later.');
     }
   };
 

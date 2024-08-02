@@ -25,17 +25,25 @@ export async function POST(request) {
       return NextResponse.json({ message: 'Invalid password credentials' }, { status: 401 });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
+    // Incluir role_id en el payload del token
+    const token = jwt.sign(
+      { id: user.user_id, email: user.email, role_id: user.role_id },
+      secretKey,
+      { expiresIn: '1h' }
+    );
 
     // Configurar la cookie con el token
-    const response = NextResponse.json({ message: 'Login successful', token, user: { id: user.id, email: user.email } }, { status: 200 });
+    const response = NextResponse.json(
+      { message: 'Login successful', token, user: { id: user.user_id, email: user.email, role_id: user.role_id } },
+      { status: 200 }
+    );
     response.cookies.set('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'strict',
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production', // Solo en producción debería ser `true`
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Usa 'None' en producción con HTTPS, 'Lax' para desarrollo
       maxAge: 3600,
       path: '/',
-    });
+    });   
 
     return response;
   } catch (error) {

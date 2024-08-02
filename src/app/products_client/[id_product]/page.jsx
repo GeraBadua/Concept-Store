@@ -1,7 +1,5 @@
-import AuthenticatedRoute from "@/components/AuthenticatedRoute";
 import Buttons from "./Buttons";
 import conn from "@/libs/mysql";
-import Image from "next/image";
 
 async function loadProduct(productId) {
   const [data] = await conn.query('SELECT * FROM product WHERE id_product = ?', [
@@ -10,7 +8,7 @@ async function loadProduct(productId) {
   return data;
 }
 
-async function ProductPage({ params }) {
+async function ProductPage_client({ params }) {
   const product = await loadProduct(params.id_product);
 
   if (!product || product.length === 0) {
@@ -20,7 +18,6 @@ async function ProductPage({ params }) {
   const productData = product[0];
 
   return (
-    <AuthenticatedRoute allowedRoles={[1]}> {/* Only admin */}
     <section className="flex justify-center items-center h-[calc(100vh-10rem)]">
       <div className="flex w-4/6 h-2/6 justify-center">
         <div className="p-6 bg-white w-1/3">
@@ -28,20 +25,13 @@ async function ProductPage({ params }) {
           <h4 className="text-4xl font-bold">{productData.price}$</h4>
           <p className="text-slate-700">{productData.description}</p>
           <Buttons productId={productData.id_product} />
-         </div>
-      {productData.image && (
-        <Image
-            src={productData.image}
-            width={300} // Añadir el ancho adecuado
-            height={300} // Añadir la altura adecuada
-            className="w-1/3"
-            alt={productData.name}
-          />
+        </div>
+        {productData.image && (
+          <img src={productData.image} className="w-1/3" alt={productData.name} />
         )}
       </div>
     </section>
-    </AuthenticatedRoute>
   );
 }
 
-export default ProductPage;
+export default ProductPage_client;

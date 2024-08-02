@@ -8,7 +8,7 @@ export default function RegisterForm({ onSwitch }) {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const router = useRouter();
+  const [role, setRole] = useState('2'); // Default to 'Seller'
 
   const validateForm = () => {
     if (!email || !password || !name) {
@@ -27,7 +27,11 @@ export default function RegisterForm({ onSwitch }) {
       const response = await fetch('/api/admin_auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+<<<<<<< HEAD
         body: JSON.stringify({ email, password, name }),
+=======
+        body: JSON.stringify({ email, password, name, role}),
+>>>>>>> origin/Users-Rol
       });
       const data = await response.json();
 
@@ -76,6 +80,14 @@ export default function RegisterForm({ onSwitch }) {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 mb-4 border rounded"
         />
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+        >
+          <option value="1">Admin</option>
+          <option value="2">Seller</option>
+        </select>
         <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
           Register
         </button>

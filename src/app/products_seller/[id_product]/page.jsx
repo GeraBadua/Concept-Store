@@ -20,7 +20,7 @@ async function ProductPage({ params }) {
   const productData = product[0];
 
   return (
-    <AuthenticatedRoute allowedRoles={[1]}> {/* Only admin */}
+    <AuthenticatedRoute allowedRoles={[2]}> {/* Only seller */}
     <section className="flex justify-center items-center h-[calc(100vh-10rem)]">
       <div className="flex w-4/6 h-2/6 justify-center">
         <div className="p-6 bg-white w-1/3">
@@ -28,8 +28,8 @@ async function ProductPage({ params }) {
           <h4 className="text-4xl font-bold">{productData.price}$</h4>
           <p className="text-slate-700">{productData.description}</p>
           <Buttons productId={productData.id_product} />
-         </div>
-      {productData.image && (
+        </div>
+        {productData.image && (
         <Image
             src={productData.image}
             width={300} // Añadir el ancho adecuado

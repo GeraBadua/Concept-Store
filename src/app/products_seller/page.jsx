@@ -14,8 +14,8 @@ async function ProductsPage() {
   const products = await loadProducts();
 
   return (
-    <AuthenticatedRoute allowedRoles={[1]}> {/* Only admin */}
-      <h1 className="text-white text-center text-xl">Admin</h1>
+    <AuthenticatedRoute allowedRoles={[2]}> {/* Only admin */}
+    <h1 className="text-white text-center text-xl">Seller</h1>
       <ul>
           <li>
             <Link href="/new" className="text-sky-500 hover:text-sky-400">
@@ -25,7 +25,7 @@ async function ProductsPage() {
       </ul>
       <div className="grid gap-4 grid-cols-4">
         {products.map(product => (
-          <ProductCard key={product.id_product} product={product} basePath="/products"/>
+          <ProductCard key={product.id_product} product={product} basePath="/products_seller"/>
         ))}
       </div>
     </AuthenticatedRoute>
