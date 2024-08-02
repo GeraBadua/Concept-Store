@@ -23,7 +23,7 @@
     "react-dom": "^18",
     "serverless-mysql": "^1.5.5",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.12.3"
+    "sweetalert2": "^11.6.13"
   },
   "devDependencies": {
     "eslint": "^8",
