@@ -17,9 +17,9 @@ const AuthenticatedRoute = ({ children, allowedRoles }) => {
       try {
         // Decodificar el token
         const decoded = jwtDecode(token);
-        const role = decoded.rol_id;
+        const role = decoded.role_id;
 
-        // Redirigir basado en el rol
+        // Redirigir basado en el role
         if (allowedRoles && !allowedRoles.includes(role)) {
           if (role === 1) {
             router.push('/products');

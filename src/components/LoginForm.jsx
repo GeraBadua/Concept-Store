@@ -32,9 +32,9 @@ export default function LoginForm({ onSwitch }) {
       if (response.ok) {
         Cookies.set('token', data.token, { expires: 1, secure: process.env.NODE_ENV === 'production', path: '/', sameSite: 'None' });
         
-        // Decodifica el token para obtener el rol
+        // Decodifica el token para obtener el role
         const decoded = jwtDecode(data.token);
-        const role = decoded.rol_id;
+        const role = decoded.role_id;
 
         // Redirige al usuario basado en su rol
         if (role === 1) {

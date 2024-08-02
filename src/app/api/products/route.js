@@ -8,7 +8,7 @@ export async function GET() {
     const results = await conn.query("SELECT * FROM product");
     return NextResponse.json(results);
   } catch (error) {
-    console.log(error);
+    console.log("Error fetching products:", error);
     return NextResponse.json(
       {
         message: error.message,
@@ -48,23 +48,23 @@ export async function POST(request) {
     }
 
     const buffer = await processImage(image);
+    console.log("Image processed successfully");
 
     const res = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            resource_type: "image",
-          },
-          async (err, result) => {
-            if (err) {
-              console.log(err);
-              reject(err);
-            }
-
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: "image",
+        },
+        (err, result) => {
+          if (err) {
+            console.log("Cloudinary upload error:", err);
+            reject(err);
+          } else {
+            console.log("Cloudinary upload result:", result);
             resolve(result);
           }
-        )
-        .end(buffer);
+        }
+      ).end(buffer);
     });
 
     const result = await conn.query("INSERT INTO product SET ?", {
@@ -72,15 +72,21 @@ export async function POST(request) {
       description: data.get("description"),
       price: data.get("price"),
       image: res.secure_url,
+      inventory: data.get("inventory"),
+      id_provider: data.get("id_provider"),
     });
+    console.log("Database insert result:", result);
 
     return NextResponse.json({
       name: data.get("name"),
       description: data.get("description"),
       price: data.get("price"),
+      inventory: data.get("inventory"),
+      id_provider: data.get("id_provider"),
       id: result.insertId,
     });
   } catch (error) {
+    console.log("Error submitting product:", error);
     return NextResponse.json(
       {
         message: error.message,

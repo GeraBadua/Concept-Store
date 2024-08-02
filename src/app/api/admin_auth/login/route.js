@@ -24,16 +24,16 @@ export async function POST(request) {
       return NextResponse.json({ message: 'Invalid password credentials' }, { status: 401 });
     }
 
-    // Incluir rol_id en el payload del token
+    // Incluir role_id en el payload del token
     const token = jwt.sign(
-      { id: user.user_id, email: user.email, rol_id: user.rol_id },
+      { id: user.user_id, email: user.email, role_id: user.role_id },
       secretKey,
       { expiresIn: '1h' }
     );
 
     // Configurar la cookie con el token
     const response = NextResponse.json(
-      { message: 'Login successful', token, user: { id: user.user_id, email: user.email, rol_id: user.rol_id } },
+      { message: 'Login successful', token, user: { id: user.user_id, email: user.email, role_id: user.role_id } },
       { status: 200 }
     );
     response.cookies.set('token', token, {
