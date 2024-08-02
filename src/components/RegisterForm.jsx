@@ -27,11 +27,7 @@ export default function RegisterForm({ onSwitch }) {
       const response = await fetch('/api/admin_auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-<<<<<<< HEAD
-        body: JSON.stringify({ email, password, name }),
-=======
         body: JSON.stringify({ email, password, name, role}),
->>>>>>> origin/Users-Rol
       });
       const data = await response.json();
 

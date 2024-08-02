@@ -115,54 +115,47 @@ function ProductForm() {
           htmlFor="name"
           className="block text-gray-700 text-sm font-bold mb-2"
         >
-          X
-        </button>
-        <form onSubmit={handleSubmit} ref={form}>
-          <label
-            htmlFor="name"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Product Name:
-          </label>
-          <input
-            name="name"
-            type="text"
-            placeholder="name"
-            onChange={handleChange}
-            value={product.name}
-            className="shadow appearance-none border rounded w-full py-2 px-3"
-            autoFocus
-          />
+          Product Name:
+        </label>
+        <input
+          name="name"
+          type="text"
+          placeholder="name"
+          onChange={handleChange}
+          value={product.name}
+          className="shadow appearance-none border rounded w-full py-2 px-3"
+          autoFocus
+        />
 
-          <label
-            htmlFor="price"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Product Price:
-          </label>
-          <input
-            name="price"
-            type="text"
-            placeholder="00.00"
-            onChange={handleChange}
-            value={product.price}
-            className="shadow appearance-none border rounded w-full py-2 px-3"
-          />
+        <label
+          htmlFor="price"
+          className="block text-gray-700 text-sm font-bold mb-2"
+        >
+          Product Price:
+        </label>
+        <input
+          name="price"
+          type="text"
+          placeholder="00.00"
+          onChange={handleChange}
+          value={product.price}
+          className="shadow appearance-none border rounded w-full py-2 px-3"
+        />
 
-          <label
-            htmlFor="description"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Product Description:
-          </label>
-          <textarea
-            name="description"
-            rows={3}
-            placeholder="description"
-            onChange={handleChange}
-            value={product.description}
-            className="shadow appearance-none border rounded w-full py-2 px-3"
-          />
+        <label
+          htmlFor="description"
+          className="block text-gray-700 text-sm font-bold mb-2"
+        >
+          Product Description:
+        </label>
+        <textarea
+          name="description"
+          rows={3}
+          placeholder="description"
+          onChange={handleChange}
+          value={product.description}
+          className="shadow appearance-none border rounded w-full py-2 px-3"
+        />
 
         <label
           htmlFor="id_provider"
@@ -209,6 +202,12 @@ function ProductForm() {
               alt="Product Image"
             />
           )}
+          <input
+            type="file"
+            className="ml-4"
+            onChange={handleFileChange}
+          />
+        </div>
 
         {file && (
           <Image
