@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 function ProductForm() {
   const [product, setProduct] = useState({
@@ -92,14 +94,33 @@ function ProductForm() {
 
       form.current.reset();
       router.refresh();
-      router.push("/products");
+
+      const token = Cookies.get('token');
+      if (token) {
+        const decoded = jwtDecode(token);
+        const role = decoded.role_id;
+        if (role === 1) {
+          router.push("/products");
+        } else if (role === 2) {
+          router.push("/products_seller");
+        }
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
   const handleClose = () => {
-    router.push("/products");
+    const token = Cookies.get('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      const role = decoded.role_id;
+      if (role === 1) {
+        router.push("/products");
+      } else if (role === 2) {
+        router.push("/products_seller");
+      }
+    }
   };
 
   return (
@@ -178,8 +199,8 @@ function ProductForm() {
         </select>
 
         <label htmlFor="inventory" className="block text-gray-700 text-sm font-bold mb-2">
-        Product Inventory:
-      </label>
+          Product Inventory:
+        </label>
         <input
           name="inventory"
           type="number"

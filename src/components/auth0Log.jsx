@@ -1,11 +1,34 @@
-"use client"; // Asegura que este componente se renderiza en el cliente
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const Auth0Log = () => {
   const { user, error, isLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      const token = Cookies.get('token');
+      if (token) {
+        const decoded = jwtDecode(token);
+        const role = decoded.role_id;
+
+        if (role === 1) {
+          router.push('/products');
+        } else if (role === 2) {
+          router.push('/products_seller');
+        } else if (role === 3) {
+          router.push('/products_client');
+        } else {
+          router.push('/');
+        }
+      }
+    }
+  }, [user, router]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;

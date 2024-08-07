@@ -6,6 +6,10 @@ import jwtDecode from "jwt-decode"; // Importa jwt-decode
 function Buttons({ productId }) {
   const router = useRouter();
 
+  const handleClose = () => {
+    router.push("/products_client");
+  };
+
   // Función para obtener el userId desde el JWT
   const getUserIdFromToken = () => {
     const token = localStorage.getItem("token"); // O obtén el token de las cookies si lo tienes almacenado ahí
@@ -61,6 +65,12 @@ function Buttons({ productId }) {
       >
         Add to cart
       </button>
+      <button
+          onClick={handleClose}
+          className="text-white bg-gray-500 hover:bg-gray-700 py-2 px-3 rounded"
+        >
+          X
+        </button>
     </div>
   );
 }

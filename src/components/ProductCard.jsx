@@ -18,7 +18,7 @@ function ProductCard({ product, basePath }) {
       )}
       <div className="p-4">
         <h1 className="text-lg font-bold">{product.name}</h1>
-        <h2 className="text-2xl text-slate-600">{product.price}</h2>
+        <h2 className="text-2xl text-slate-600">${product.price}</h2>
         <p>{product.description}</p>
       </div>
     </Link>

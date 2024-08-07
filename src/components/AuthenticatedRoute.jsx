@@ -25,6 +25,8 @@ const AuthenticatedRoute = ({ children, allowedRoles }) => {
             router.push('/products');
           } else if (role === 2) {
             router.push('/products_seller');
+          } else if (role === 3) {
+            router.push('/products_client');
           }
         }
       } catch (error) {
