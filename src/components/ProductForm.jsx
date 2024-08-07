@@ -100,7 +100,7 @@ function ProductForm() {
         const decoded = jwtDecode(token);
         const role = decoded.role_id;
         if (role === 1) {
-          router.push("/products");
+          router.push("/products_admin");
         } else if (role === 2) {
           router.push("/products_seller");
         }
@@ -116,7 +116,7 @@ function ProductForm() {
       const decoded = jwtDecode(token);
       const role = decoded.role_id;
       if (role === 1) {
-        router.push("/products");
+        router.push("/products_admin");
       } else if (role === 2) {
         router.push("/products_seller");
       }

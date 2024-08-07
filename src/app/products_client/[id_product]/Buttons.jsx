@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import jwtDecode from "jwt-decode"; // Importa jwt-decode
+import { jwtDecode } from 'jwt-decode';
 
 function Buttons({ productId }) {
   const router = useRouter();
@@ -17,8 +17,8 @@ function Buttons({ productId }) {
       return null;
     }
     try {
-      const decodedToken = jwtDecode(token);
-      return decodedToken.userId; // Ajusta esto según la estructura de tu token
+      const decoded = jwtDecode(token);
+      return decoded.userId; // Ajusta esto según la estructura de tu token
     } catch (error) {
       console.error("Failed to decode token:", error);
       return null;

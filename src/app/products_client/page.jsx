@@ -13,6 +13,7 @@ async function ProductsPage() {
   const products = await loadProducts();
 
   return (
+    <AuthenticatedRoute allowedRoles={[3]}>
       <div>
           <h1 className="text-white text-center text-xl">Client</h1>
           <div className="grid gap-4 grid-cols-4">
@@ -21,7 +22,8 @@ async function ProductsPage() {
             ))}
           </div>
       </div>
-  );
+    </AuthenticatedRoute>
+    );
 }
 
 export default ProductsPage;

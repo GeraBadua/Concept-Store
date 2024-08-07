@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 
 export default function LoginForm({ onSwitch }) {
@@ -37,7 +36,6 @@ export default function LoginForm({ onSwitch }) {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set('token', data.token, { expires: 1, secure: process.env.NODE_ENV === 'production', path: '/', sameSite: 'None' });
         
         // Decodifica el token para obtener el role
         const decoded = jwtDecode(data.token);
@@ -45,7 +43,7 @@ export default function LoginForm({ onSwitch }) {
 
         // Redirige al usuario basado en su rol
         if (role === 1) {
-          router.push('/products');
+          router.push('/products_admin');
         } else if (role === 2) {
           router.push('/products_seller');
         } else {
