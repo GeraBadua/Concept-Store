@@ -1,4 +1,4 @@
-import ProductCard from "@/components/ProductCard_client";
+import ProductCard from "@/components/ProductCard";
 import conn from '@/libs/mysql';
 
 // Función para cargar productos desde la base de datos
