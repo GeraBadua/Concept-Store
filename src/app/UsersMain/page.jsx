@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Image from 'next/image';
-import NavbarUsers from '../../components/NavbarUsers';
+import NavbarUsers from '@/components/NavbarUsers';
 
 
 const UserMain = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white"><NavbarUsers></NavbarUsers>
+    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
+      <NavbarUsers />
       <main className="flex-grow container mx-auto p-8">
         <section className="text-center mb-8">
           <h2 className="text-4xl font-extrabold mb-4">Welcome to Concept Store Users Page</h2>

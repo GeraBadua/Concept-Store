@@ -1,4 +1,4 @@
-"use client"; // Asegura que este componente se renderiza en el cliente
+"use client";
 
 import React from 'react';
 import Link from 'next/link';
@@ -7,8 +7,8 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 const Auth0Log = () => {
   const { user, error, isLoading } = useUser();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+  if (isLoading) return <div className="text-red-600">Loading...</div>;
+  if (error) return <div className="text-red-600">{error.message}</div>;
 
   const handleLogout = () => {
     window.location.href = '/api/auth/logout';
@@ -23,16 +23,16 @@ const Auth0Log = () => {
       {user ? (
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
         >
           Logout
         </button>
       ) : (
         <button
           onClick={handleLogin}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-white hover:bg-red-700 text-red-600 font-bold py-2 px-4 rounded border-2 border-red-600"
         >
-          Login as user
+          Login
         </button>
       )}
     </div>
