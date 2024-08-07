@@ -52,7 +52,7 @@ const LandingPage = () => {
         <div className="text-center mb-4">
           <p className="text-m mx-auto text-center">
             If you are an administrator click{' '}
-            <Link href="/AdminAuth" className="text-red-600 hover:text-red-800 underline">
+            <Link href="/admin_auth" className="text-red-600 hover:text-red-800 underline">
               HERE
             </Link>{' '}
             to go to the administrator login.
