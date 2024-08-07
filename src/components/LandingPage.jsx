@@ -1,34 +1,66 @@
-"use client"; // Asegura que este componente se renderiza en el cliente
+"use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Link from "next/link"
+import Link from "next/link";
+import dynamic from 'next/dynamic';
+
+const CarouselComponent = dynamic(() => import('react-responsive-carousel').then(mod => mod.Carousel), {
+  ssr: false,
+});
 
 const LandingPage = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-white">
-      <main className="flex-grow container mx-auto p-8">
+    <div className="min-h-screen flex flex-col bg-white text-red-600">
+      <main className="flex-grow container mx-auto p-8 flex flex-col justify-between">
         <section className="text-center mb-8">
           <h2 className="text-4xl font-extrabold mb-4">Welcome to Concept Store Administrator Page</h2>
           <p className="text-xl mb-8">We offer the latest mobile technology from top brands such as Apple, Samsung, Xiaomi, Huawei, and more.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {['Apple', 'Samsung', 'Xiaomi', 'Huawei'].map((brand) => (
-            <div key={brand} className="relative w-full h-64 bg-white rounded-lg shadow-lg overflow-hidden flex items-center justify-center">
-              <Image
-                src={`/images/${brand}.jpeg`}
-                alt={brand}
-                width={256} // Añadir el ancho adecuado
-                height={256} // Añadir la altura adecuada
-                priority // Priorizar
-                className="p-4 object-contain"
-              />
-            </div>
-            ))}
+          
+          <div className="mb-8">
+            {isClient && (
+              <CarouselComponent 
+                autoPlay 
+                infiniteLoop 
+                interval={5000} 
+                showStatus={false} 
+                showThumbs={false}
+                className="bg-white rounded-lg shadow-lg overflow-hidden"
+              >
+                {['Apple', 'Samsung', 'Xiaomi', 'Huawei'].map((brand) => (
+                  <div key={brand} className="relative w-full h-96">
+                    <Image
+                      src={`/images/${brand}.jpeg`}
+                      alt={brand}
+                      layout="fill"
+                      objectFit="contain"
+                      priority
+                    />
+                  </div>
+                ))}
+              </CarouselComponent>
+            )}
           </div>
-          <p className="text-m mb-8 mx-auto text-center">If you are not an administrator click <Link href="/UsersMain">HERE</Link> to go to the USERS page.</p>
         </section>
+        
+        <div className="text-center mb-4">
+          <p className="text-m mx-auto text-center">
+            If you are an administrator click{' '}
+            <Link href="/AdminAuth" className="text-red-600 hover:text-red-800 underline">
+              HERE
+            </Link>{' '}
+            to go to the administrator login.
+          </p>
+        </div>
       </main>
-      <footer className="w-full p-4 bg-gray-800 text-center mt-auto">
+      
+      <footer className="bg-red-600 p-4 text-center text-white">
         <p>&copy; 2024 Concept Store. All rights reserved.</p>
       </footer>
     </div>
