@@ -30,7 +30,7 @@ const Auth0Log = () => {
     }
   }, [user, router]);
 
-  if (isLoading) return <div className="text-red-600">Loading...</div>;
+  if (isLoading) return <div className="text-white-600">Loading...</div>;
   if (error) return <div className="text-red-600">{error.message}</div>;
 
   const handleLogout = () => {
