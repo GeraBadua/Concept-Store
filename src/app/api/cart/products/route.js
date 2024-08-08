@@ -27,7 +27,7 @@ export async function GET(request) {
 
     // Obtener los productos en el carrito
     const [cartItems] = await conn.query(`
-      SELECT p.id_product, p.name, p.description, p.price, ci.quantity
+      SELECT p.id_product, p.name, p.description, p.price, p.image, ci.quantity
       FROM cart_item ci
       JOIN product p ON ci.product_id = p.id_product
       JOIN cart c ON ci.cart_id = c.cart_id
