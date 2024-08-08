@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 const Auth0Log = () => {
   const { user, error, isLoading } = useUser();
