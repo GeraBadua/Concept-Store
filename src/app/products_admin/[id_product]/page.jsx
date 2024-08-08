@@ -21,9 +21,9 @@ async function ProductPage({ params }) {
 
   return (
     <AuthenticatedRoute allowedRoles={[1]}> {/* Only admin */}
-    <section className="flex justify-center items-center h-[calc(100vh-10rem)]">
-      <div className="flex w-4/6 h-2/6 justify-center">
-        <div className="p-6 bg-white w-1/3">
+    <section className="flex justify-center items-center h-auto pt-20">
+      <div className="flex w-4/6 h-auto justify-center border-rounded bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="p-6 text-center flex flex-col justify-center items-center">
           <h3 className="text-2xl font-bold mb-3">{productData.name}</h3>
           <h4 className="text-4xl font-bold">${productData.price}</h4>
           <p className="text-slate-700">{productData.description}</p>

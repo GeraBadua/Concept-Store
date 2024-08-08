@@ -14,6 +14,9 @@ async function ProductsPage() {
   const products = await loadProducts();
 
   return (
+    <section>
+      <br></br>
+      <br></br>
     <AuthenticatedRoute allowedRoles={[3]}>
       <div>
           <h1 className="text-white text-center text-xl">Client</h1>
@@ -26,11 +29,12 @@ async function ProductsPage() {
           </ul>
           <div className="grid gap-4 grid-cols-4">
             {products.map(product => (
-              <ProductCard key={product.id_product} product={product} basePath="/products_client"/>
+              <ProductCard className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" key={product.id_product} product={product} basePath="/products_client"/>
             ))}
           </div>
       </div>
     </AuthenticatedRoute>
+    </section>
     );
 }
 
