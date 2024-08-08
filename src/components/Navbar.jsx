@@ -14,6 +14,8 @@ const Navbar = () => {
   const { user } = useUser();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get('token');
@@ -21,7 +23,6 @@ const Navbar = () => {
 
     if (token) {
       try {
-        // Decodificar el token
         const decoded = jwtDecode(token);
         setUserRole(decoded.role_id);
       } catch (error) {
@@ -29,11 +30,17 @@ const Navbar = () => {
         setIsAuthenticated(false);
       }
     }
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname, user]);
 
   const handleLogout = async () => {
-    Cookies.remove('token'); // Elimina la cookie de token
-    window.location.href = '/api/auth/logout'; // Realiza el logout de Auth0
+    Cookies.remove('token');
+    window.location.href = '/api/auth/logout';
   };
 
   const handleRedirect = () => {
@@ -49,13 +56,22 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full p-4 bg-red-600 shadow-lg flex justify-between items-center">
-      <button onClick={handleRedirect} className="text-3xl font-bold text-white">
+    <header 
+      className={`fixed w-full p-4 shadow-lg flex justify-between items-center transition-colors duration-300 ${
+        isScrolled || isHovered ? 'bg-[#e1e8ec] text-[#01587a]' : 'bg-transparent text-white'
+      }`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ zIndex: 10 }}  // Ajustar el z-index para que la navbar esté siempre encima
+    >
+      <button onClick={handleRedirect} className="text-3xl text-[#01587a] font-bold">
         Concept Store
       </button>
-
+      
       {isAuthenticated ? (
-        <button onClick={handleLogout} className="bg-white hover:bg-red-700 text-red-600 font-bold py-2 px-4 rounded">
+        <button onClick={handleLogout} className={`font-bold py-2 px-4 rounded ${
+          isScrolled || isHovered ? 'bg-[#01587a] text-white' : 'bg-[#f3ba00] text-[#01587a]'
+        } hover:bg-[#99d8dd] hover:text-black transition-colors duration-300`}>
           Logout
         </button>
       ) : (

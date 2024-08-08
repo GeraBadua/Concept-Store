@@ -1,8 +1,9 @@
+// Auth0Log.jsx
 import React, { useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { jwtDecode } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
 const Auth0Log = () => {
   const { user, error, isLoading } = useUser();
@@ -50,7 +51,7 @@ const Auth0Log = () => {
       {!user && (
         <button
           onClick={handleLogin}
-          className="bg-white hover:bg-red-700 text-red-600 font-bold py-2 px-4 rounded border-2 border-red-600"
+          className="bg-[#01587a] hover:bg-[#5cb3c1] text-white font-bold py-2 px-4 rounded border-2 border-[#99d8dd]"
         >
           Login
         </button>

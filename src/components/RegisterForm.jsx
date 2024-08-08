@@ -50,47 +50,47 @@ export default function RegisterForm({ onSwitch }) {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      {error && <p className="text-red-500">{error}</p>}
-      {success && <p className="text-green-500">{success}</p>}
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
+    <div className="max-w-md w-full p-6 bg-[#01587a] rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold mb-6 text-center text-[#99d8dd]">Register</h2>
+      {error && <p className="text-[#f3ba00] mb-4">{error}</p>}
+      {success && <p className="text-green-400 mb-4">{success}</p>}
       <form onSubmit={handleRegister}>
         <input
           type="text"
           placeholder="Full Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-3 mb-4 bg-[#e1e8ec] text-[#01587a] rounded"
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-3 mb-4 bg-[#e1e8ec] text-[#01587a] rounded"
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-3 mb-4 bg-[#e1e8ec] text-[#01587a] rounded"
         />
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-3 mb-6 bg-[#e1e8ec] text-[#01587a] rounded"
         >
           <option value="1">Admin</option>
           <option value="2">Seller</option>
         </select>
-        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
+        <button type="submit" className="w-full p-3 bg-[#f3ba00] text-[#01587a] rounded font-bold hover:bg-[#99d8dd] transition-colors duration-300">
           Register
         </button>
       </form>
-      <p className="mt-4 text-center">
+      <p className="mt-6 text-center text-[#99d8dd]">
         Already have an account?{' '}
-        <a onClick={onSwitch} className="text-blue-500 cursor-pointer">
+        <a onClick={onSwitch} className="text-[#f3ba00] cursor-pointer hover:underline">
           Login here
         </a>
       </p>

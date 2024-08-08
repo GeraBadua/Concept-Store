@@ -17,29 +17,30 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-red-600">
+    <div className="min-h-screen flex flex-col bg-cover bg-center text-white" >
       <main className="flex-grow container mx-auto p-8 flex flex-col justify-between">
-        <section className="text-center mb-8">
-          <h2 className="text-4xl font-extrabold mb-4">Welcome to Concept Store Administrator Page</h2>
-          <p className="text-xl mb-8">We offer the latest mobile technology from top brands such as Apple, Samsung, Xiaomi, Huawei, and more.</p>
+        <section className="text-center mb-8 mt-20">
+          <h2 className="text-6xl font-extrabold mb-4" style={{ color: '#01587a' }}>Welcome to Concept Store</h2>
+          <p className="text-2xl mb-8" style={{ color: '#5cb3c1' }}>A page that offers a great variety of the most luxurious perfumes in the marktet.</p>
           
           <div className="mb-8">
             {isClient && (
-              <CarouselComponent 
-                autoPlay 
-                infiniteLoop 
-                interval={5000} 
-                showStatus={false} 
+              <CarouselComponent
+                autoPlay
+                infiniteLoop
+                interval={5000}
+                showStatus={false}
                 showThumbs={false}
-                className="bg-white rounded-lg shadow-lg overflow-hidden"
+                className="bg-[#e1e8ec] rounded-lg shadow-lg overflow-hidden"
               >
-                {['Apple', 'Samsung', 'Xiaomi', 'Huawei'].map((brand) => (
+                {['ACQUA', 'Dior', 'LV', 'TomFord'].map((brand) => (
                   <div key={brand} className="relative w-full h-96">
                     <Image
                       src={`/images/${brand}.jpeg`}
                       alt={brand}
                       layout="fill"
-                      objectFit="contain"
+                      objectFit="cover"
+                      objectPosition="center"
                       priority
                     />
                   </div>
@@ -50,9 +51,9 @@ const LandingPage = () => {
         </section>
         
         <div className="text-center mb-4">
-          <p className="text-m mx-auto text-center">
+          <p className="text-xl mx-auto text-center" style={{ color: '#99d8dd' }}>
             If you are an administrator click{' '}
-            <Link href="/admin_auth" className="text-red-600 hover:text-red-800 underline">
+            <Link href="/admin_auth" className="text-[#f3ba00] hover:text-[#e1e8ec] underline">
               HERE
             </Link>{' '}
             to go to the administrator login.
@@ -60,7 +61,7 @@ const LandingPage = () => {
         </div>
       </main>
       
-      <footer className="bg-red-600 p-4 text-center text-white">
+      <footer className="bg-[#01587a] p-4 text-center text-white">
         <p>&copy; 2024 Concept Store. All rights reserved.</p>
       </footer>
     </div>
