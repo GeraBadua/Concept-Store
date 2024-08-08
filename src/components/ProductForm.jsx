@@ -4,6 +4,8 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import 'sweetalert2/src/sweetalert2.scss';
 
 function ProductForm() {
   const [product, setProduct] = useState({
@@ -20,6 +22,19 @@ function ProductForm() {
   const router = useRouter();
   const params = useParams();
 
+  // Configuración del toast
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
+  });
+
   // Obtener proveedores
   useEffect(() => {
     axios.get(`/api/providers`)
@@ -27,6 +42,10 @@ function ProductForm() {
         setProviders(res.data);
       })
       .catch((error) => {
+        Toast.fire({
+          icon: 'error',
+          title: 'Error fetching providers'
+        });
         console.error("Error fetching providers:", error);
       });
   }, []);
@@ -47,6 +66,10 @@ function ProductForm() {
           });
         })
         .catch((error) => {
+          Toast.fire({
+            icon: 'error',
+            title: 'Error fetching product data'
+          });
           console.error("Error fetching product data:", error);
         });
     }
@@ -84,12 +107,26 @@ function ProductForm() {
             "Content-Type": "multipart/form-data",
           },
         });
+        Toast.fire({
+          icon: 'success',
+          title: 'Product created successfully'
+        });
+        setTimeout(() => {
+          window.location.reload(); // Recarga la página después de un pequeño retraso
+        }, 3500); // Ajusta el tiempo (en milisegundos) según la duración de la alerta
       } else {
         await axios.put(`/api/products/${params.id_product}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+        Toast.fire({
+          icon: 'success',
+          title: 'Product updated successfully'
+        });
+        setTimeout(() => {
+          window.location.reload(); // Recarga la página después de un pequeño retraso
+        }, 3500); // Ajusta el tiempo (en milisegundos) según la duración de la alerta
       }
 
       form.current.reset();
@@ -106,6 +143,10 @@ function ProductForm() {
         }
       }
     } catch (error) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Error submitting form'
+      });
       console.error("Error submitting form:", error);
     }
   };

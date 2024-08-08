@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
+import 'sweetalert2/src/sweetalert2.scss'
 
 export default function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState('');
@@ -12,18 +14,13 @@ export default function LoginForm({ onSwitch }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     if (!email.trim() || !password.trim()) {
       Swal.fire({
         icon: 'warning',
         title: 'Input Error',
         text: 'Please enter your email and password.',
       });
-      return;
-    }
-
-    if (!email.trim() || !password.trim()) {
-      setError('Please enter your email and password.');
       return;
     }
 
@@ -37,10 +34,27 @@ export default function LoginForm({ onSwitch }) {
       const data = await response.json();
 
       if (response.ok) {
-        
-        // Decodifica el token para obtener el role
         const decoded = jwtDecode(data.token);
         const role = decoded.role_id;
+
+        // Configura el Toast
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+
+        // Muestra la alerta de éxito
+        Toast.fire({
+          icon: 'success',
+          title: 'Login successful! Welcome to the store.'
+        });
 
         // Redirige al usuario basado en su rol
         if (role === 1) {
@@ -48,11 +62,8 @@ export default function LoginForm({ onSwitch }) {
         } else if (role === 2) {
           router.push('/products_seller');
         } else {
-          // Redirigir a una página por defecto si el rol no coincide
           router.push('/');
         }
-
-        alert('Login successful!, Welcome to the store.');
       } else {
         setError(data.message || 'Email or password is incorrect. Please try again.');
       }

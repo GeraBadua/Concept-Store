@@ -1,18 +1,33 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
+import 'sweetalert2/src/sweetalert2.scss';
 
 export default function RegisterForm({ onSwitch }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [role, setRole] = useState('2'); // Default to 'Seller'
 
   const validateForm = () => {
     if (!email || !password || !name) {
-      setError('All fields are required');
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: 'warning',
+        title: 'All fields are required',
+      });
       return false;
     }
     setError('');
@@ -27,33 +42,72 @@ export default function RegisterForm({ onSwitch }) {
       const response = await fetch('/api/admin_auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name, role}),
+        body: JSON.stringify({ email, password, name, role }),
       });
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Register successful!'); 
-        setError('');
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Register successful!',
+        });
+
         setTimeout(() => {
           onSwitch();
         }, 3000);
       } else {
-        console.error('Register failed', data.message);
-        setError(data.message || 'Unknown error');
-        setSuccess('');
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+
+        Toast.fire({
+          icon: 'error',
+          title: data.message || 'Unknown error',
+        });
       }
     } catch (error) {
-      console.error('Register error', error);
-      setError('An error occurred, please try again later.');
-      setSuccess('');
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: 'error',
+        title: 'An error occurred, please try again later.',
+      });
     }
   };
 
   return (
     <div className="max-w-md w-full p-6 bg-[#01587a] rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold mb-6 text-center text-[#99d8dd]">Register</h2>
-      {error && <p className="text-[#f3ba00] mb-4">{error}</p>}
-      {success && <p className="text-green-400 mb-4">{success}</p>}
       <form onSubmit={handleRegister}>
         <input
           type="text"

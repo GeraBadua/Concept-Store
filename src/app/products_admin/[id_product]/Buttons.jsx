@@ -27,7 +27,7 @@ function Buttons({ productId }) {
         className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         onClick={async () => {
           if (confirm("are you sure you want to delete this prodcut?")) {
-            const res = await axios.delete("/api/products_admin/" + productId);
+            const res = await axios.delete("/api/products/" + productId);
             if (res.status === 204) {
               router.push("/products_admin");
               router.refresh();
