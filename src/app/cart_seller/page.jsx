@@ -1,6 +1,7 @@
 "use client";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import AuthenticatedRoute from "@/components/AuthenticatedRoute";
 
 const CartSeller = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -20,6 +21,46 @@ const CartSeller = () => {
 
     fetchCartItems();
   }, []);
+
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      const res = await axios.put('/api/cart/update', { productId, quantity }, { withCredentials: true });
+      if (res.status === 200) {
+        setCartItems(prevItems =>
+          prevItems.map(item =>
+            item.id_product === productId ? { ...item, quantity } : item
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      alert('Failed to update quantity.');
+    }
+  };
+
+  const handleIncrease = (productId, currentQuantity) => {
+    const newQuantity = currentQuantity + 1;
+    updateQuantity(productId, newQuantity);
+  };
+
+  const handleDecrease = (productId, currentQuantity) => {
+    if (currentQuantity > 1) {
+      const newQuantity = currentQuantity - 1;
+      updateQuantity(productId, newQuantity);
+    }
+  };
+
+  const handleRemove = async (productId) => {
+    try {
+      const res = await axios.delete('/api/cart/item', { data: { productId }, withCredentials: true });
+      if (res.status === 200) {
+        setCartItems(prevItems => prevItems.filter(item => item.id_product !== productId));
+      }
+    } catch (error) {
+      console.error('Error removing item:', error);
+      alert('Failed to remove item.');
+    }
+  };
 
   const handleCompleteSale = async () => {
     try {
@@ -56,6 +97,7 @@ const CartSeller = () => {
   }
 
   return (
+  <AuthenticatedRoute allowedRoles={[2]}>
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-white">Your Cart</h1>
       <div className="space-y-4">
@@ -65,7 +107,27 @@ const CartSeller = () => {
               <h2 className="text-xl font-semibold">{item.name}</h2>
               <p className="text-gray-600">{item.description}</p>
               <p className="text-gray-800 font-bold">Price: ${item.price}</p>
-              <p className="text-gray-800">Quantity: {item.quantity}</p>
+              <div className="flex items-center space-x-2 mt-2">
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                  onClick={() => handleDecrease(item.id_product, item.quantity)}
+                >
+                  -
+                </button>
+                <span className="text-gray-800">{item.quantity}</span>
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
+                  onClick={() => handleIncrease(item.id_product, item.quantity)}
+                >
+                  +
+                </button>
+                <button
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
+                  onClick={() => handleRemove(item.id_product)}
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -85,6 +147,7 @@ const CartSeller = () => {
         </button>
       </div>
     </div>
+  </AuthenticatedRoute> 
   );
 };
 
