@@ -123,7 +123,6 @@ const CartSeller = () => {
 
   return (
     <section className="flex justify-center items-center h-auto pt-20">
-        
     <br></br>
     <br></br>
     <div className="container mx-auto p-4">
