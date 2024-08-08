@@ -6,7 +6,7 @@ function Buttons({ productId }) {
   const router = useRouter();
 
   const handleClose = () => {
-    router.push("/products_seller");
+    router.push("/products_client");
   };
 
   const handleAddToCart = async () => {

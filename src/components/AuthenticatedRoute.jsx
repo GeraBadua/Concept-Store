@@ -14,10 +14,12 @@ const AuthenticatedRoute = ({ children, allowedRoles }) => {
     if (!token) {
       // Redirigir al login adecuado dependiendo de la ruta actual
       const currentPath = window.location.pathname;
-      if (currentPath.startsWith('/products_admin') || currentPath.startsWith('/products_seller') || currentPath.startsWith('/new')) {
+      if (currentPath.startsWith('/products_admin') || currentPath.startsWith('/products_seller')) {
         router.push('/admin_auth');
       } else if (currentPath.startsWith('/products_client')) {
         router.push('/api/auth/login');
+      } else {
+        router.push('/');
       }
     } else {
       try {

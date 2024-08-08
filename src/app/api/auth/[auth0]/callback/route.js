@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 export async function GET(request) {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
+  const returnTo = url.searchParams.get('returnTo') || '/';
 
   if (!code) {
-    return NextResponse.json({ message: 'No code provided' }, { status: 400 });
+    return NextResponse.redirect('/login');
   }
 
   try {
-    // Intercambia el código por un token
     const tokenResponse = await fetch('https://YOUR_AUTH0_DOMAIN/oauth/token', {
       method: 'POST',
       headers: {
@@ -30,7 +30,6 @@ export async function GET(request) {
 
     const tokenData = await tokenResponse.json();
 
-    // Inserta o actualiza el usuario en la base de datos
     const userInfoResponse = await fetch('/api/auth/[auth0]/insertUser', {
       method: 'POST',
       headers: {
@@ -44,9 +43,9 @@ export async function GET(request) {
       throw new Error('Failed to insert user');
     }
 
-    return NextResponse.json({ message: 'User processed successfully' });
+    return NextResponse.redirect(returnTo);
   } catch (error) {
     console.error('Error during Auth0 callback:', error);
-    return NextResponse.json({ message: 'An error occurred during callback', error: error.message }, { status: 500 });
+    return NextResponse.redirect('/login');
   }
 }
