@@ -5,7 +5,7 @@ export async function GET(request) {
   const code = url.searchParams.get('code');
 
   if (!code) {
-    return NextResponse.redirect('/login');
+    return NextResponse.json({ message: 'No code provided' }, { status: 400 });
   }
 
   try {
@@ -24,14 +24,29 @@ export async function GET(request) {
       }),
     });
 
-    const tokenData = await tokenResponse.json();
-    if (!tokenData.access_token) {
-      throw new Error('Token not received');
-    }    
+    if (!tokenResponse.ok) {
+      throw new Error('Failed to fetch token');
+    }
 
-    return response;
+    const tokenData = await tokenResponse.json();
+
+    // Inserta o actualiza el usuario en la base de datos
+    const userInfoResponse = await fetch('/api/auth/[auth0]/insertUser', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+      body: JSON.stringify({ email: tokenData.email, name: tokenData.name, sub: tokenData.sub }),
+    });
+
+    if (!userInfoResponse.ok) {
+      throw new Error('Failed to insert user');
+    }
+
+    return NextResponse.json({ message: 'User processed successfully' });
   } catch (error) {
-    console.error('Error during Auth0 callback:', error.message, error.stack);
-    return NextResponse.redirect('/login');
-  }  
+    console.error('Error during Auth0 callback:', error);
+    return NextResponse.json({ message: 'An error occurred during callback', error: error.message }, { status: 500 });
+  }
 }

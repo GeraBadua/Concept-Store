@@ -12,26 +12,39 @@ const Auth0Log = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        const response = await fetch('/api/auth/[auth0]/insertUser', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(user),
-        });
-        const data = await response.json();
-        const token = data.token;
+        try {
+          Cookies.remove('token'); // Elimina la cookie de token existente
 
-        if (token) {
-          Cookies.set('token', token, { path: '/' });
-          const decoded = jwtDecode(token);
-          const role = decoded.role_id;
+          const response = await fetch('/api/auth/[auth0]/insertUser', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+          });
 
-          if (role === 3) {
-            router.push('/products_client');
-          } else {
-            router.push('/');
+          if (!response.ok) {
+            throw new Error('Failed to insert user');
           }
+
+          const data = await response.json();
+          const token = data.token;
+
+          if (token) {
+            Cookies.set('token', token, { path: '/' });
+            const decoded = jwtDecode(token);
+            const role = decoded.role_id;
+
+            if (role === 3) {
+              router.push('/products_client');
+            } else {
+              router.push('/');
+            }
+          } else {
+            console.error('Token not found in response');
+          }
+        } catch (error) {
+          console.error('Fetch data error:', error);
         }
       }
     };
@@ -43,6 +56,7 @@ const Auth0Log = () => {
   if (error) return <div className="text-red-600">{error.message}</div>;
 
   const handleLogin = () => {
+    Cookies.remove('token'); // Elimina la cookie de token existente
     window.location.href = '/api/auth/login?returnTo=/products_client';
   };
 
