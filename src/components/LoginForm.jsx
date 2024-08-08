@@ -12,7 +12,54 @@ export default function LoginForm({ onSwitch }) {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // ... (el resto de la lógica de handleLogin permanece igual)
+    
+    if (!email.trim() || !password.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Input Error',
+        text: 'Please enter your email and password.',
+      });
+      return;
+    }
+
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin_auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        
+        // Decodifica el token para obtener el role
+        const decoded = jwtDecode(data.token);
+        const role = decoded.role_id;
+
+        // Redirige al usuario basado en su rol
+        if (role === 1) {
+          router.push('/products_admin');
+        } else if (role === 2) {
+          router.push('/products_seller');
+        } else {
+          // Redirigir a una página por defecto si el rol no coincide
+          router.push('/');
+        }
+
+        alert('Login successful!, Welcome to the store.');
+      } else {
+        setError(data.message || 'Email or password is incorrect. Please try again.');
+      }
+    } catch (error) {
+      console.error('Login error', error);
+      setError('An error occurred, please try again later.');
+    }
   };
 
   return (
