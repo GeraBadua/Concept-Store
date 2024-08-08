@@ -14,21 +14,25 @@ async function ProductsPage() {
   const products = await loadProducts();
 
   return (
-    <AuthenticatedRoute allowedRoles={[2]}> {/* Only admin */}
-    <h1 className="text-white text-center text-xl">Seller</h1>
-      <ul>
-          <li>
-            <Link href="/new" className="text-sky-500 hover:text-sky-400">
-              New
-            </Link>
-          </li>
-      </ul>
-      <div className="grid gap-4 grid-cols-4">
-        {products.map(product => (
-          <ProductCard key={product.id_product} product={product} basePath="/products_seller"/>
-        ))}
-      </div>
-    </AuthenticatedRoute>
+    <section>
+      <br></br>
+      <br></br>
+      <AuthenticatedRoute allowedRoles={[2]}> {/* Only seller */}
+        <h1 className="text-white text-center text-xl">Seller</h1>
+        <div className="flex justify-start mb-4">
+          <Link href="/new">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"> {/* Added ml-4 */}
+              Add new product
+            </button>
+          </Link>
+        </div>
+        <div className="grid gap-4 grid-cols-4">
+          {products.map(product => (
+            <ProductCard key={product.id_product} product={product} basePath="/products_seller"/>
+          ))}
+        </div>
+      </AuthenticatedRoute>
+    </section>
   );
 }
 

@@ -165,6 +165,10 @@ function ProductForm() {
   };
 
   return (
+    <section>
+      <br></br>
+      <br></br>
+      <br />
     <div className="relative bg-white shadow-md rounded-md px-8 pt-6 pb-8 mb-4 w-full max-w-md">
       <button
         onClick={handleClose}
@@ -286,6 +290,7 @@ function ProductForm() {
         </button>
       </form>
     </div>
+    </section>
   );
 }
 

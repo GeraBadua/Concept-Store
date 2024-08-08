@@ -2,9 +2,9 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import ClientPaymentModal from '@/components/ClientPaymentModal'; // Asegúrate de importar el nuevo modal
+import PaymentModal from '@/components/PaymentModal'; // Asegúrate de importar el modal
 
-const CartClient = () => {
+const CartSeller = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -182,7 +182,7 @@ const CartClient = () => {
           Clear Cart
         </button>
       </div>
-      <ClientPaymentModal
+      <PaymentModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onCompletePurchase={handleCompletePurchase}
@@ -193,4 +193,4 @@ const CartClient = () => {
   );
 };
 
-export default CartClient;
+export default CartSeller;

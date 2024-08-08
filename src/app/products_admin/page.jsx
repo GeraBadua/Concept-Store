@@ -19,20 +19,18 @@ async function ProductsPage() {
       <br />
       <br />
       <br />
-      <ul>
-          <li>
-            <Link href="/new" className="text-sky-500 hover:text-sky-400">
-              New
-            </Link>
-          </li>
-      </ul>
-      <ul>
-          <li>
-            <Link href="/reports_sales" className="text-sky-500 hover:text-sky-400">
-              Reports Sales
-            </Link>
-          </li>
-      </ul>
+      <div className="flex justify-start mb-4 space-x-4"> {/* Flex container with space between buttons */}
+        <Link href="/new">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"> {/* Added ml-4 */}
+            Add new product
+          </button>
+        </Link>
+        <Link href="/reports_sales">
+          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4"> {/* Added ml-4 */}
+            Reports Sales
+          </button>
+        </Link>
+      </div>
       <div className="grid gap-4 grid-cols-4">
         {products.map(product => (
           <ProductCard key={product.id_product} product={product} basePath="/products_admin"/>
