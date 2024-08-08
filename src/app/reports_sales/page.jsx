@@ -3,63 +3,7 @@
 import AuthenticatedRoute from '@/components/AuthenticatedRoute';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import styled from 'styled-components';
 import ProductCard from '@/components/ProductCard'; // Asegúrate de que la ruta sea correcta
-
-const CustomStyles = {
-  headCells: {
-    style: {
-      fontSize: '1rem',
-      fontWeight: 'bold',
-      backgroundColor: '#01587a',
-      color: '#fff',
-    },
-  },
-  cells: {
-    style: {
-      fontSize: '1rem',
-      padding: '8px 16px',
-    },
-  },
-  rows: {
-    style: {
-      minHeight: '72px', // override the row height
-    },
-  },
-  pagination: {
-    style: {
-      border: 'none',
-      color: '#01587a',
-    },
-  },
-};
-
-const StyledContainer = styled.div`
-  background-color: #f4f4f4;
-  color: #333;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  borderRadius: '0.5rem'
-
-  h2 {
-    color: #01587a;
-  }
-
-  h3 {
-    color: #5cb3c1;
-  }
-
-  .card {
-    background-color: #ffffff;
-    color: #000000;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    borderRadius: '0.5rem'
-  }
-`;
 
 const ReportsSalesPage = () => {
   const [sales, setSales] = useState([]);
@@ -133,23 +77,23 @@ const ReportsSalesPage = () => {
   ];
 
   return (
-    <AuthenticatedRoute allowedRoles={[1]}>  {/* Only admins */}
-      <StyledContainer>
-        <main className="flex-grow container mx-auto p-8 flex flex-col justify-between">
+    <AuthenticatedRoute allowedRoles={[1]}>  {/* Only admins */}  
+      <div className="min-h-screen flex flex-row bg-cover bg-center text-white">
+        <main className="flex-grow container mx-auto p-8 flex flex-row justify-center">
           <section className="text-center mb-8 mt-20">
-            <h2 className="text-4xl font-extrabold mb-4">Sales Overview</h2>
-            <p className="text-2xl mb-8">Overview of all sales and sales items.</p>
+            <h2 className="text-8xl font-extrabold mb-4" style={{ color: '#01587a' }}>Sales Overview</h2>
+            <p className="text-2xl mb-8" style={{ color: '#5cb3c1' }}>Overview of all sales and sales items.</p>
 
-            <div className="grid grid-cols-1 gap-4 mb-8 w-auto h-auto">
+            <div className="grid grid-rows-1 gap-4 h-min">
               {/* Ganancias */}
-              <div className="card">
-                <h3 className="text-2xl font-bold mb-2">Total Sales</h3>
-                <p className="text-xl">${totalSales.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
+              <div className="bg-white text-black p-5 rounded-lg shadow-lg justify-center align-items h-fit object-cover">
+                <h3 className="text-4xl font-bold mb-2 justify-center align-items">Total Sales</h3>
+                <p className="text-xl justify-center align-items">${totalSales.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
               </div>
 
               {/* Producto más vendido */}
-              <div className="card">
-                <h3 className="text-2xl font-bold mb-2 w-auto h-24 justify-center align-items">Most Sold Product</h3>
+              <div className="bg-white from-slate-300 text-black p-5 rounded-lg shadow-lg justify-center align-items object-cover object-cover gap-4">
+                <h3 className="text-4xl font-bold mb-2">Most Sold Product</h3>
                 {mostSoldProduct.product_id ? (
                   <ProductCard
                     key={mostSoldProduct.product_id}
@@ -165,35 +109,47 @@ const ReportsSalesPage = () => {
                 )}
               </div>
             </div>
-
+                <br></br>
             <div className="mb-8">
-              <h3 className="text-3xl font-semibold mb-4">Sales</h3>
+              <h3 className="text-4xl font-semibold mb-4">Sales</h3>
               <DataTable
                 columns={salesColumns}
                 data={sales}
-                customStyles={CustomStyles}
-                pagination
                 responsive
                 striped
+                pagination
                 highlightOnHover
+                customStyles={{
+                  table: {
+                    style: {
+                      borderRadius: '0.5rem', // Aplicar borde redondeado
+                    },
+                  },
+                }}
               />
             </div>
 
             <div className="mb-8">
-              <h3 className="text-3xl font-semibold mb-4">Sales Items</h3>
+              <h3 className="text-4xl font-semibold mb-4">Sales Items</h3>
               <DataTable
                 columns={salesItemsColumns}
                 data={salesItems}
-                customStyles={CustomStyles}
-                pagination
                 responsive
                 striped
+                pagination
                 highlightOnHover
+                customStyles={{
+                  table: {
+                    style: {
+                      borderRadius: '0.5rem', // Aplicar borde redondeado
+                    },
+                  },
+                }}
               />
             </div>
           </section>
         </main>
-      </StyledContainer>
+      </div>
     </AuthenticatedRoute>
   );
 };
