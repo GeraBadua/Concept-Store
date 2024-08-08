@@ -1,6 +1,19 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2'; // Asegúrate de importar SweetAlert2
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 
 function Buttons({ productId }) {
   const router = useRouter();
@@ -13,11 +26,17 @@ function Buttons({ productId }) {
     try {
       const res = await axios.post("/api/cart", { productId }, { withCredentials: true });
       if (res.status === 200) {
-        alert("Product added to cart successfully!");
+        Toast.fire({
+          icon: 'success',
+          title: 'Product added to cart successfully!'
+        });
       }
     } catch (error) {
-      alert("Failed to add product to cart.");
       console.error(error);
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to add product to cart.'
+      });
     }
   };
 

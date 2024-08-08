@@ -1,19 +1,16 @@
-import { NextResponse } from "next/server";
 import conn from "@/libs/mysql";
 
 export async function GET() {
-  try {
-    const [rows] = await conn.query("SELECT id_provider, name FROM provider");
-    return NextResponse.json(rows);
-  } catch (error) {
-    console.log("Error fetching providers:", error);
-    return NextResponse.json(
-      {
-        message: error.message,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+  const [providers] = await conn.query('SELECT * FROM provider');
+  return new Response(JSON.stringify(providers), {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+export async function POST(request) {
+  const data = await request.json();
+  const result = await conn.query('INSERT INTO provider SET ?', data);
+  return new Response(JSON.stringify({ id: result.insertId }), {
+    headers: { "Content-Type": "application/json" },
+  });
 }

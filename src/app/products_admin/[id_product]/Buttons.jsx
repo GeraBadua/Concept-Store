@@ -1,9 +1,22 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 function Buttons({ productId }) {
   const router = useRouter();
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+  });
 
   const handleClose = () => {
     router.push("/products_admin");
@@ -13,10 +26,16 @@ function Buttons({ productId }) {
     try {
       const res = await axios.post("/api/cart", { productId }, { withCredentials: true });
       if (res.status === 200) {
-        alert("Product added to cart successfully!");
+        Toast.fire({
+          icon: 'success',
+          title: 'Product added to cart successfully!'
+        });
       }
     } catch (error) {
-      alert("Failed to add product to cart.");
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to add product to cart.'
+      });
       console.error(error);
     }
   };
@@ -26,9 +45,13 @@ function Buttons({ productId }) {
       <button
         className="text-white bg-red-500 hover:bg-red-700 py-2 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         onClick={async () => {
-          if (confirm("are you sure you want to delete this prodcut?")) {
+          if (confirm("Are you sure you want to delete this product?")) {
             const res = await axios.delete("/api/products/" + productId);
             if (res.status === 204) {
+              Toast.fire({
+                icon: 'success',
+                title: 'Product deleted successfully.'
+              });
               router.push("/products_admin");
               router.refresh();
             }
@@ -46,12 +69,12 @@ function Buttons({ productId }) {
         Edit
       </button>
       <button
-          onClick={handleClose}
-          className="text-white bg-gray-500 hover:bg-gray-700 py-2 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105"
-        >
-          X
-        </button>
-        <button
+        onClick={handleClose}
+        className="text-white bg-gray-500 hover:bg-gray-700 py-2 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+      >
+        X
+      </button>
+      <button
         className="text-white bg-green-500 hover:bg-green-700 py-2 px-3 rounded"
         onClick={handleAddToCart}
       >

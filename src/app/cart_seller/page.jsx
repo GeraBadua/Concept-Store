@@ -3,6 +3,19 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import PaymentModal from '@/components/PaymentModal'; // Asegúrate de importar el modal
+import Swal from 'sweetalert2'; // Importar SweetAlert2
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
+});
 
 const CartSeller = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -19,6 +32,10 @@ const CartSeller = () => {
         setTotal(totalAmount);
       } catch (error) {
         console.error('Error fetching cart items:', error);
+        Toast.fire({
+          icon: 'error',
+          title: 'Failed to fetch cart items.'
+        });
       } finally {
         setLoading(false);
       }
@@ -43,10 +60,17 @@ const CartSeller = () => {
           return sum + item.price * item.quantity;
         }, 0);
         setTotal(newTotal);
+        Toast.fire({
+          icon: 'success',
+          title: 'Quantity updated successfully.'
+        });
       }
     } catch (error) {
       console.error('Error updating quantity:', error);
-      alert('Failed to update quantity.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to update quantity.'
+      });
     }
   };
 
@@ -74,10 +98,17 @@ const CartSeller = () => {
           return sum;
         }, 0);
         setTotal(newTotal);
+        Toast.fire({
+          icon: 'success',
+          title: 'Item removed successfully.'
+        });
       }
     } catch (error) {
       console.error('Error removing item:', error);
-      alert('Failed to remove item.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to remove item.'
+      });
     }
   };
 
@@ -89,13 +120,19 @@ const CartSeller = () => {
     try {
       const res = await axios.post('/api/cart/complete', {}, { withCredentials: true });
       if (res.status === 200) {
-        alert(`Sale completed successfully with ${method}!`);
+        Toast.fire({
+          icon: 'success',
+          title: `Sale completed successfully with ${method}!`
+        });
         setCartItems([]); // Limpiar el carrito en el estado
         setTotal(0); // Restablecer el total
       }
     } catch (error) {
       console.error('Error completing sale:', error);
-      alert('Failed to complete sale.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to complete sale.'
+      });
     }
   };
 
@@ -103,13 +140,19 @@ const CartSeller = () => {
     try {
       const res = await axios.delete('/api/cart/clear', { withCredentials: true });
       if (res.status === 200) {
-        alert('Cart cleared successfully!');
+        Toast.fire({
+          icon: 'success',
+          title: 'Cart cleared successfully!'
+        });
         setCartItems([]); // Limpiar el carrito en el estado
         setTotal(0); // Restablecer el total
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
-      alert('Failed to clear cart.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to clear cart.'
+      });
     }
   };
 

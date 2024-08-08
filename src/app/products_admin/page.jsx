@@ -30,6 +30,11 @@ async function ProductsPage() {
             Reports Sales
           </button>
         </Link>
+        <Link href="/providers">
+          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4"> {/* Added ml-4 */}
+            Providers
+          </button>
+        </Link>
       </div>
       <div className="grid gap-4 grid-cols-4">
         {products.map(product => (

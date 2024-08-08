@@ -3,6 +3,20 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import PaymentModal from '@/components/PaymentModal'; // Asegúrate de importar el modal
+import Swal from 'sweetalert2'; // Importar SweetAlert2
+
+// Configuración del Toast
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
+});
 
 const CartSeller = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -19,6 +33,10 @@ const CartSeller = () => {
         setTotal(totalAmount);
       } catch (error) {
         console.error('Error fetching cart items:', error);
+        Toast.fire({
+          icon: 'error',
+          title: 'Failed to fetch cart items.',
+        });
       } finally {
         setLoading(false);
       }
@@ -43,10 +61,17 @@ const CartSeller = () => {
           return sum + item.price * item.quantity;
         }, 0);
         setTotal(newTotal);
+        Toast.fire({
+          icon: 'success',
+          title: 'Quantity updated successfully.',
+        });
       }
     } catch (error) {
       console.error('Error updating quantity:', error);
-      alert('Failed to update quantity.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to update quantity.',
+      });
     }
   };
 
@@ -74,10 +99,17 @@ const CartSeller = () => {
           return sum;
         }, 0);
         setTotal(newTotal);
+        Toast.fire({
+          icon: 'success',
+          title: 'Item removed successfully.',
+        });
       }
     } catch (error) {
       console.error('Error removing item:', error);
-      alert('Failed to remove item.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to remove item.',
+      });
     }
   };
 
@@ -89,13 +121,19 @@ const CartSeller = () => {
     try {
       const res = await axios.post('/api/cart/complete', {}, { withCredentials: true });
       if (res.status === 200) {
-        alert(`Sale completed successfully with ${method}!`);
+        Toast.fire({
+          icon: 'success',
+          title: `Sale completed successfully with ${method}!`,
+        });
         setCartItems([]); // Limpiar el carrito en el estado
         setTotal(0); // Restablecer el total
       }
     } catch (error) {
       console.error('Error completing sale:', error);
-      alert('Failed to complete sale.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to complete sale.',
+      });
     }
   };
 
@@ -103,13 +141,19 @@ const CartSeller = () => {
     try {
       const res = await axios.delete('/api/cart/clear', { withCredentials: true });
       if (res.status === 200) {
-        alert('Cart cleared successfully!');
+        Toast.fire({
+          icon: 'success',
+          title: 'Cart cleared successfully!',
+        });
         setCartItems([]); // Limpiar el carrito en el estado
         setTotal(0); // Restablecer el total
       }
     } catch (error) {
       console.error('Error clearing cart:', error);
-      alert('Failed to clear cart.');
+      Toast.fire({
+        icon: 'error',
+        title: 'Failed to clear cart.',
+      });
     }
   };
 
@@ -123,72 +167,70 @@ const CartSeller = () => {
 
   return (
     <section className="flex justify-center items-center h-auto pt-20"> 
-    <br></br>
-    <br></br>
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-white">Your Cart</h1>
-      <div className="space-y-4">
-        {cartItems.map((item) => (
-          <div key={item.id_product} className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row">
-            {item.image && (
-              <Image
-                src={item.image}
-                width={128} // Añadir el ancho adecuado
-                height={128} // Añadir la altura adecuada
-                className="w-32 h-32 object-cover mr-4 rounded"
-                alt={item.name}
-              />
-            )}
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold">{item.name}</h2>
-              <p className="text-gray-600">{item.description}</p>
-              <p className="text-gray-800 font-bold">Price: ${item.price}</p>
-              <div className="flex items-center space-x-2 mt-2">
-                <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                  onClick={() => handleDecrease(item.id_product, item.quantity)}
-                >
-                  -
-                </button>
-                <span className="text-gray-800">{item.quantity}</span>
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
-                  onClick={() => handleIncrease(item.id_product, item.quantity)}
-                >
-                  +
-                </button>
-                <button
-                  className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
-                  onClick={() => handleRemove(item.id_product)}
-                >
-                  Remove
-                </button>
+      <div className="container mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4 text-white">Your Cart</h1>
+        <div className="space-y-4">
+          {cartItems.map((item) => (
+            <div key={item.id_product} className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row">
+              {item.image && (
+                <Image
+                  src={item.image}
+                  width={128} // Añadir el ancho adecuado
+                  height={128} // Añadir la altura adecuada
+                  className="w-32 h-32 object-cover mr-4 rounded"
+                  alt={item.name}
+                />
+              )}
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold">{item.name}</h2>
+                <p className="text-gray-600">{item.description}</p>
+                <p className="text-gray-800 font-bold">Price: ${item.price}</p>
+                <div className="flex items-center space-x-2 mt-2">
+                  <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() => handleDecrease(item.id_product, item.quantity)}
+                  >
+                    -
+                  </button>
+                  <span className="text-gray-800">{item.quantity}</span>
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() => handleIncrease(item.id_product, item.quantity)}
+                  >
+                    +
+                  </button>
+                  <button
+                    className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() => handleRemove(item.id_product)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div className="flex justify-end space-x-4 mt-4">
+          <button
+            onClick={handleCompleteSale}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Complete Sale
+          </button>
+          <button
+            onClick={handleClearCart}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Clear Cart
+          </button>
+        </div>
+        <PaymentModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onCompletePurchase={handleCompletePurchase}
+          total={total}
+        />
       </div>
-      <div className="flex justify-end space-x-4 mt-4">
-        <button
-          onClick={handleCompleteSale}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Complete Sale
-        </button>
-        <button
-          onClick={handleClearCart}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Clear Cart
-        </button>
-      </div>
-      <PaymentModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onCompletePurchase={handleCompletePurchase}
-        total={total}
-      />
-    </div>
     </section>
   );
 };
