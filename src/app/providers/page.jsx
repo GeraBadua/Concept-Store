@@ -15,17 +15,15 @@ async function ProvidersPage() {
 
   return (
     <AuthenticatedRoute allowedRoles={[1]}> {/* Solo para admin */}
-      <h1 className="text-white text-center text-xl">Administrar Proveedores</h1>
-      <br />
-      <br />
-      <br />
+      <h1 className="text-white text-center text-xl">Providers</h1>
       <ul>
-          <li>
-            <Link href="/providers/new" className="text-sky-500 hover:text-sky-400">
-              New Provider
-            </Link>
-          </li>
+        <Link href="/providers/new">
+          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4"> {/* Added ml-4 */}
+            Add Provider
+          </button>
+        </Link>
       </ul>
+      <br />
       <div className="grid gap-4 grid-cols-4">
         {providers.map(provider => (
           <ProviderCard key={provider.id_provider} provider={provider} basePath="/providers"/>

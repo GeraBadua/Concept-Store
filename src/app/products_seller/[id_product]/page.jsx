@@ -20,11 +20,7 @@ async function ProductPage({ params }) {
   const productData = product[0];
 
   return (
-    
-   
     <section className="flex justify-center items-center h-auto pt-20"> 
-    <br></br>
-    <br></br>
     <AuthenticatedRoute allowedRoles={[2]}> {/* Only admin */}
       <div className="flex w-4/6 h-auto justify-center border-rounded bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="p-6 text-center flex flex-col justify-center items-center">

@@ -70,7 +70,7 @@ function ProviderForm({ provider = {} }) {
     <div className="bg-white shadow-md rounded-md px-8 pt-6 pb-8 mb-4 w-full max-w-md">
       <form onSubmit={handleSubmit} ref={form}>
         <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
-          Nombre del Proveedor:
+          Provider Name:
         </label>
         <input
           name="name"
@@ -83,7 +83,7 @@ function ProviderForm({ provider = {} }) {
         />
 
         <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2">
-          Dirección:
+          Address:
         </label>
         <input
           name="address"
@@ -95,7 +95,7 @@ function ProviderForm({ provider = {} }) {
         />
 
         <label htmlFor="phone" className="block text-gray-700 text-sm font-bold mb-2">
-          Teléfono:
+          Phone:
         </label>
         <input
           name="phone"

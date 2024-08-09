@@ -166,8 +166,6 @@ const CartClient = () => {
 
   return (
     <section className="flex justify-center items-center h-auto pt-20">
-      <br></br>
-      <br></br>
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4 text-white">Your Cart</h1>
         <div className="space-y-4">

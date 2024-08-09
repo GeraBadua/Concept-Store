@@ -70,7 +70,7 @@ const Navbar = () => {
 
   return (
     <header 
-      className={`fixed w-full p-4 shadow-lg flex justify-between items-center transition-colors duration-300 ${
+      className={`w-full p-4 shadow-lg flex justify-between items-center transition-colors duration-300 ${
         isScrolled || isHovered ? 'bg-[#e1e8ec] text-[#01587a]' : 'bg-transparent text-white'
       }`}
       onMouseEnter={() => setIsHovered(true)}

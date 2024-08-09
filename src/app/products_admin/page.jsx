@@ -16,9 +16,6 @@ async function ProductsPage() {
   return (
     <AuthenticatedRoute allowedRoles={[1]}> {/* Only admin */}
       <h1 className="text-white text-center text-xl">Admin</h1>
-      <br />
-      <br />
-      <br />
       <div className="flex justify-start mb-4 space-x-4"> {/* Flex container with space between buttons */}
         <Link href="/new">
           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"> {/* Added ml-4 */}

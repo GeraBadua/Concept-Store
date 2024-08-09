@@ -15,8 +15,6 @@ async function ProductsPage() {
 
   return (
     <section>
-      <br></br>
-      <br></br>
       <AuthenticatedRoute allowedRoles={[2]}> {/* Only seller */}
         <h1 className="text-white text-center text-xl">Seller</h1>
         <div className="flex justify-start mb-4">

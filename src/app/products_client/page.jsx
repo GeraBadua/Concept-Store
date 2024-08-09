@@ -14,10 +14,8 @@ async function ProductsPage() {
   const products = await loadProducts();
 
   return (
-    <section>
-      <br></br>
-      <br></br>
     <AuthenticatedRoute allowedRoles={[3]}>
+    <section>
       <div>
           <h1 className="text-white text-center text-xl">Client</h1>
           <ul>
@@ -29,8 +27,8 @@ async function ProductsPage() {
             ))}
           </div>
       </div>
-    </AuthenticatedRoute>
     </section>
+    </AuthenticatedRoute>
     );
 }
 
