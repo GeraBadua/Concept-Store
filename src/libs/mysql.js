@@ -6,9 +6,10 @@ const conn = mysql.createPool({
     password: process.env.MYSQL_PASSWORD,
     port: parseInt(process.env.MYSQL_PORT),
     database: process.env.MYSQL_DATABASE,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    ssl: process.env.NODE_ENV === 'production' ? true : false,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 export default conn;
