@@ -7,7 +7,6 @@
  *   const products = await db.getAll();
  */
 
-import conn from './mysql';
 import {
   getAllProducts,
   getProductById,
@@ -18,6 +17,32 @@ import {
 } from '@/data/demo';
 
 const IS_DEMO_MODE = process.env.DEMO_MODE === 'true';
+
+let conn = null;
+
+// Lazy load real database connection only if needed
+async function getConnection() {
+  if (conn) return conn;
+  
+  try {
+    const mysql = await import('mysql2/promise');
+    conn = mysql.createPool({
+      host: process.env.MYSQL_HOST,
+      user: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      port: parseInt(process.env.MYSQL_PORT),
+      database: process.env.MYSQL_DATABASE,
+      ssl: process.env.NODE_ENV === 'production' ? true : false,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    });
+    return conn;
+  } catch (error) {
+    console.error('Failed to create database connection:', error);
+    throw error;
+  }
+}
 
 /**
  * Get database interface (demo or real)
@@ -38,15 +63,17 @@ export async function getDatabase() {
     };
   }
 
+  const connection = await getConnection();
+
   return {
     mode: 'database',
     query: realQuery,
     getAll: async () => {
-      const [results] = await conn.query('SELECT * FROM product');
+      const [results] = await connection.query('SELECT * FROM product');
       return results;
     },
     getById: async (id) => {
-      const [results] = await conn.query(
+      const [results] = await connection.query(
         'SELECT * FROM product WHERE id_product = ?',
         [parseInt(id)]
       );
@@ -54,38 +81,38 @@ export async function getDatabase() {
     },
     search: async (query) => {
       if (!query) {
-        const [results] = await conn.query('SELECT * FROM product');
+        const [results] = await connection.query('SELECT * FROM product');
         return results;
       }
-      const [results] = await conn.query(
+      const [results] = await connection.query(
         'SELECT * FROM product WHERE LOWER(name) LIKE ? OR LOWER(description) LIKE ?',
         [`%${query.toLowerCase()}%`, `%${query.toLowerCase()}%`]
       );
       return results;
     },
     create: async (data) => {
-      const [result] = await conn.query('INSERT INTO product SET ?', data);
+      const [result] = await connection.query('INSERT INTO product SET ?', data);
       return { id_product: result.insertId, ...data };
     },
     update: async (id, data) => {
-      await conn.query(
+      await connection.query(
         'UPDATE product SET ? WHERE id_product = ?',
         [data, parseInt(id)]
       );
-      const [results] = await conn.query(
+      const [results] = await connection.query(
         'SELECT * FROM product WHERE id_product = ?',
         [parseInt(id)]
       );
       return results[0] || null;
     },
     delete: async (id) => {
-      const [result] = await conn.query(
+      const [result] = await connection.query(
         'DELETE FROM product WHERE id_product = ?',
         [parseInt(id)]
       );
       return result.affectedRows > 0;
     },
-    close: () => conn.end()
+    close: () => connection.end()
   };
 }
 
@@ -102,7 +129,8 @@ function demoQuery(query, params = []) {
  * Helper for real database queries
  */
 async function realQuery(query, params = []) {
-  return conn.query(query, params);
+  const connection = await getConnection();
+  return connection.query(query, params);
 }
 
 /**
@@ -118,3 +146,4 @@ export function isDemoMode() {
 export function getDatabaseMode() {
   return IS_DEMO_MODE ? 'DEMO' : 'DATABASE';
 }
+

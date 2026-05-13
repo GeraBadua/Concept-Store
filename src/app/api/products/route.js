@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getDatabase, isDemoMode } from "@/libs/useDatabase";
-import cloudinary from "@/libs/cloudinary";
 import { processImage } from "@/libs/processImage";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -91,7 +90,8 @@ export async function POST(request) {
       // En modo demo, usamos una imagen placeholder
       imageUrl = "https://images.unsplash.com/photo-1627979435509-be10e53dce6c?w=500&h=500&fit=crop";
     } else {
-      // En modo BD, subimos a Cloudinary
+      // En modo BD, importar cloudinary y subir
+      const cloudinary = await import("@/libs/cloudinary").then(m => m.default);
       const buffer = await processImage(image);
 
       const res = await new Promise((resolve, reject) => {
