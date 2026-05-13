@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import conn from "@/libs/mysql";
+import { getDatabase, isDemoMode } from "@/libs/useDatabase";
 import cloudinary from "@/libs/cloudinary";
-import { processImage }from "@/libs/processImage";
+import { processImage } from "@/libs/processImage";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -22,9 +22,10 @@ export async function GET(request, { params }) {
       );
     }
 
-    const [result] = await conn.query("SELECT * FROM product WHERE id_product = ?", [id]);
+    const db = await getDatabase();
+    const result = await db.getById(id);
 
-    if (result.length === 0) {
+    if (!result) {
       return NextResponse.json(
         { message: "Product not found", success: false },
         { status: 404 }
@@ -32,8 +33,9 @@ export async function GET(request, { params }) {
     }
 
     return NextResponse.json({
-      data: result[0],
+      data: result,
       success: true,
+      mode: isDemoMode() ? 'demo' : 'database'
     });
   } catch (error) {
     console.error("Error fetching product:", error);
@@ -54,9 +56,10 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    const [result] = await conn.query("DELETE FROM product WHERE id_product = ?", [id]);
+    const db = await getDatabase();
+    const deleted = await db.delete(id);
 
-    if (result.affectedRows === 0) {
+    if (!deleted) {
       return NextResponse.json(
         { message: "Product not found", success: false },
         { status: 404 }
@@ -64,7 +67,11 @@ export async function DELETE(request, { params }) {
     }
 
     return NextResponse.json(
-      { message: "Product deleted successfully", success: true },
+      { 
+        message: "Product deleted successfully", 
+        success: true,
+        mode: isDemoMode() ? 'demo' : 'database'
+      },
       { status: 200 }
     );
   } catch (error) {
@@ -114,26 +121,15 @@ export async function PUT(request, { params }) {
       );
     }
 
+    const db = await getDatabase();
+    
     const updateData = {
       name: name.trim(),
       description: description.trim(),
       price: parseFloat(price),
     };
 
-    // Actualizar datos del producto sin imagen
-    const [result] = await conn.query("UPDATE product SET ? WHERE id_product = ?", [
-      updateData,
-      id,
-    ]);
-
-    if (result.affectedRows === 0) {
-      return NextResponse.json(
-        { message: "Product not found", success: false },
-        { status: 404 }
-      );
-    }
-
-    // Si hay una nueva imagen, procesarla y actualizar
+    // Si hay imagen nueva, procesar
     if (image) {
       if (!ALLOWED_TYPES.includes(image.type)) {
         return NextResponse.json(
@@ -149,54 +145,51 @@ export async function PUT(request, { params }) {
         );
       }
 
-      const buffer = await processImage(image);
+      if (isDemoMode()) {
+        updateData.image = "https://images.unsplash.com/photo-1627979435509-be10e53dce6c?w=500&h=500&fit=crop";
+      } else {
+        const buffer = await processImage(image);
 
-      const res = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "image",
-            folder: "concept-store",
-          },
-          (err, result) => {
-            if (err) {
-              console.error("Cloudinary upload error:", err);
-              reject(new Error("Failed to upload image"));
-            } else {
-              resolve(result);
+        const res = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              resource_type: "image",
+              folder: "concept-store",
+            },
+            (err, result) => {
+              if (err) {
+                console.error("Cloudinary upload error:", err);
+                reject(new Error("Failed to upload image"));
+              } else {
+                resolve(result);
+              }
             }
-          }
-        );
-        stream.on("error", (err) => {
-          console.error("Stream error:", err);
-          reject(err);
+          );
+          stream.on("error", (err) => {
+            console.error("Stream error:", err);
+            reject(err);
+          });
+          stream.end(buffer);
         });
-        stream.end(buffer);
-      });
 
-      const imageUpdateData = { image: res.secure_url };
-
-      const [imageResult] = await conn.query("UPDATE product SET ? WHERE id_product = ?", [
-        imageUpdateData,
-        id,
-      ]);
-
-      if (imageResult.affectedRows === 0) {
-        return NextResponse.json(
-          { message: "Product not found", success: false },
-          { status: 404 }
-        );
+        updateData.image = res.secure_url;
       }
     }
 
-    const [updatedProduct] = await conn.query(
-      "SELECT * FROM product WHERE id_product = ?",
-      [id]
-    );
+    const result = await db.update(id, updateData);
+
+    if (!result) {
+      return NextResponse.json(
+        { message: "Product not found", success: false },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
-      data: updatedProduct[0],
+      data: result,
       success: true,
       message: "Product updated successfully",
+      mode: isDemoMode() ? 'demo' : 'database'
     });
   } catch (error) {
     console.error("Error updating product:", error);

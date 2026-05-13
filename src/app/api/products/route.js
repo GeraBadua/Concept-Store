@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import conn from "@/libs/mysql";
+import { getDatabase, isDemoMode } from "@/libs/useDatabase";
 import cloudinary from "@/libs/cloudinary";
 import { processImage } from "@/libs/processImage";
 
@@ -8,10 +8,13 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 export async function GET() {
   try {
-    const [results] = await conn.query("SELECT * FROM product");
+    const db = await getDatabase();
+    const results = await db.getAll();
+    
     return NextResponse.json({
       data: results,
       success: true,
+      mode: isDemoMode() ? 'demo' : 'database'
     });
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -79,48 +82,58 @@ export async function POST(request) {
       );
     }
 
-    const buffer = await processImage(image);
+    const db = await getDatabase();
 
-    const res = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          resource_type: "image",
-          folder: "concept-store",
-        },
-        (err, result) => {
-          if (err) {
-            console.error("Cloudinary upload error:", err);
-            reject(new Error("Failed to upload image"));
-          } else {
-            resolve(result);
+    // Si está en modo demo, usar imagen placeholder
+    let imageUrl = null;
+    
+    if (isDemoMode()) {
+      // En modo demo, usamos una imagen placeholder
+      imageUrl = "https://images.unsplash.com/photo-1627979435509-be10e53dce6c?w=500&h=500&fit=crop";
+    } else {
+      // En modo BD, subimos a Cloudinary
+      const buffer = await processImage(image);
+
+      const res = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: "image",
+            folder: "concept-store",
+          },
+          (err, result) => {
+            if (err) {
+              console.error("Cloudinary upload error:", err);
+              reject(new Error("Failed to upload image"));
+            } else {
+              resolve(result);
+            }
           }
-        }
-      );
-      stream.on("error", (err) => {
-        console.error("Stream error:", err);
-        reject(err);
+        );
+        stream.on("error", (err) => {
+          console.error("Stream error:", err);
+          reject(err);
+        });
+        stream.end(buffer);
       });
-      stream.end(buffer);
-    });
 
-    const [result] = await conn.query("INSERT INTO product SET ?", {
+      imageUrl = res.secure_url;
+    }
+
+    const productData = {
       name: name.trim(),
       description: description.trim(),
       price: parseFloat(price),
-      image: res.secure_url,
-    });
+      image: imageUrl,
+    };
+
+    const result = await db.create(productData);
 
     return NextResponse.json(
       {
         message: "Product created successfully",
-        data: {
-          id: result.insertId,
-          name: name.trim(),
-          description: description.trim(),
-          price: parseFloat(price),
-          image: res.secure_url,
-        },
+        data: result,
         success: true,
+        mode: isDemoMode() ? 'demo' : 'database'
       },
       { status: 201 }
     );
