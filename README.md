@@ -1,4 +1,15 @@
-This is a [Next.js](https://nextjs.org/) product management application with Tailwind CSS. 
+# Concept Store
+
+This is a [Next.js](https://nextjs.org/) product management application with Tailwind CSS that allows users to manage a product catalog efficiently.
+
+## About the Project
+
+**Concept Store** is a modern web application designed to help businesses manage their product inventory. It provides an intuitive interface for creating, viewing, updating, and deleting products in a centralized database. Whether you're running a small store or a larger operation, Concept Store offers flexibility by supporting two modes of operation:
+
+- **Demo Mode**: Perfect for testing and quick deployments without requiring any database infrastructure
+- **Database Mode**: Full-featured product management with MySQL persistence for real-world applications
+
+The application is built with modern technologies including Next.js for server-side rendering and API routes, Tailwind CSS for responsive and beautiful UI design, and optional MySQL database integration for robust data persistence.
 
 > **Note**: This project can run in DEMO mode (without database) or with MySQL database connection.
 
