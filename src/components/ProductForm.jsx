@@ -93,7 +93,7 @@ function ProductForm() {
       return false;
     }
 
-    // Validar imagen (requerida solo para nuevos productos)
+    // Validate image (required only for new products)
     if (!params.id_product && !file) {
       setError("Product image is required for new products");
       return false;
@@ -138,6 +138,12 @@ function ProductForm() {
       setSuccess(successMessage);
       form.current.reset();
       setFile(null);
+      setProduct({
+        name: "",
+        price: "",
+        description: "",
+        image: ""
+      });
       
       setTimeout(() => {
         router.refresh();
@@ -154,30 +160,38 @@ function ProductForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen px-6">
       <form
-        className="bg-white shadow-md rounded-md px-8 pt-6 pb-8 mb-4 w-full max-w-md"
+        className="relative w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900/80 px-8 pb-8 pt-10 shadow-lg shadow-black/30"
         onSubmit={handleSubmit}
         ref={form}
       >
-        <h2 className="text-2xl font-bold mb-6">
+        <button
+          type="button"
+          aria-label="Cancel"
+          onClick={() => router.back()}
+          className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-slate-700 text-slate-300 transition hover:border-slate-500"
+        >
+          X
+        </button>
+        <h2 className="text-2xl font-semibold text-white mb-6">
           {params.id_product ? "Edit Product" : "Create New Product"}
         </h2>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-200">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+          <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-emerald-200">
             {success}
           </div>
         )}
 
-        <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
-          Product Name: <span className="text-red-500">*</span>
+        <label htmlFor="name" className="block text-sm font-semibold text-slate-200 mb-2">
+          Product Name: <span className="text-red-400">*</span>
         </label>
         <input
           name="name"
@@ -186,13 +200,13 @@ function ProductForm() {
           onChange={handleChange}
           value={product.name}
           maxLength="100"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-4"
+          className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
           required
           disabled={loading}
         />
 
-        <label htmlFor="price" className="block text-gray-700 text-sm font-bold mb-2">
-          Product Price: <span className="text-red-500">*</span>
+        <label htmlFor="price" className="block text-sm font-semibold text-slate-200 mb-2 mt-4">
+          Product Price: <span className="text-red-400">*</span>
         </label>
         <input
           name="price"
@@ -202,12 +216,12 @@ function ProductForm() {
           min="0"
           onChange={handleChange}
           value={product.price}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-4"
+          className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
           required
           disabled={loading}
         />
 
-        <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">
+        <label htmlFor="description" className="block text-sm font-semibold text-slate-200 mb-2 mt-4">
           Product Description:
         </label>
         <textarea
@@ -217,17 +231,17 @@ function ProductForm() {
           onChange={handleChange}
           value={product.description}
           maxLength="500"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-4"
+          className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-slate-100 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
           disabled={loading}
         />
 
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Product Image: {!params.id_product && <span className="text-red-500">*</span>}
+        <label className="block text-sm font-semibold text-slate-200 mb-2 mt-4">
+          Product Image: {!params.id_product && <span className="text-red-400">*</span>}
         </label>
-        <div className="flex items-center mb-4">
+        <div className="flex flex-wrap items-center gap-4 mb-4">
           {product.image && (
             <img
-              className="w-24 h-24 object-cover rounded"
+              className="w-24 h-24 object-cover rounded-lg"
               src={product.image}
               alt="Product Image"
             />
@@ -235,7 +249,7 @@ function ProductForm() {
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
-            className="ml-4"
+            className="text-sm text-slate-200"
             onChange={handleFileChange}
             disabled={loading}
           />
@@ -243,26 +257,36 @@ function ProductForm() {
 
         {file && (
           <div className="mb-4">
-            <p className="text-sm text-gray-600 mb-2">Preview:</p>
+            <p className="text-sm text-slate-300 mb-2">Preview:</p>
             <img
-              className="w-full max-w-xs object-contain mx-auto my-4"
+              className="w-full max-w-xs object-contain mx-auto my-4 rounded-lg"
               src={URL.createObjectURL(file)}
               alt="Preview"
             />
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-500 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded transition"
-        >
-          {loading 
-            ? "Processing..." 
-            : params.id_product 
-              ? "Update Product" 
-              : "Create Product"}
-        </button>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => router.back()}
+            className="rounded-full border border-slate-600 px-4 py-2 text-sm text-slate-200 transition hover:border-slate-400 disabled:opacity-60"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex-1 rounded-full bg-emerald-500/90 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-400 disabled:bg-slate-600"
+          >
+            {loading 
+              ? "Processing..." 
+              : params.id_product 
+                ? "Update Product" 
+                : "Create Product"}
+          </button>
+        </div>
       </form>
     </div>
   );

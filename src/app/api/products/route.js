@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDatabase, isDemoMode } from "@/libs/useDatabase";
 import { processImage } from "@/libs/processImage";
+import { demoFallbackImage } from "@/data/demo";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -87,8 +88,8 @@ export async function POST(request) {
     let imageUrl = null;
     
     if (isDemoMode()) {
-      // En modo demo, usamos una imagen placeholder
-      imageUrl = "https://images.unsplash.com/photo-1627979435509-be10e53dce6c?w=500&h=500&fit=crop";
+      // En modo demo, usamos una imagen local
+      imageUrl = demoFallbackImage;
     } else {
       // En modo BD, importar cloudinary y subir
       const cloudinary = await import("@/libs/cloudinary").then(m => m.default);

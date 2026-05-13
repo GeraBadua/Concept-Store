@@ -1,50 +1,61 @@
 // Demo data for Concept Store
 // Used when DEMO_MODE=true
 
-export const demoProducts = [
+import headphonesImage from "./headphones.png";
+import watchImage from "./watch.png";
+import powerBankImage from "./powerBank.png";
+import keyboardImage from "./keyboard.png";
+import adapterImage from "./adapter.png";
+import phoneImage from "./phone.png";
+
+export const demoFallbackImage = headphonesImage.src;
+
+const seedProducts = [
   {
     id_product: 1,
     name: "Premium Wireless Headphones",
     price: 129.99,
     description: "High-quality wireless headphones with noise cancellation and 30-hour battery life.",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop"
+    image: headphonesImage.src
   },
   {
     id_product: 2,
     name: "Minimalist Watch",
     price: 89.99,
     description: "Elegant and simple analog watch with leather strap. Perfect for any occasion.",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&h=500&fit=crop"
+    image: watchImage.src
   },
   {
     id_product: 3,
     name: "Portable Power Bank",
     price: 49.99,
     description: "20000mAh capacity with fast charging. Charges up to 3 devices simultaneously.",
-    image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=500&h=500&fit=crop"
+    image: powerBankImage.src
   },
   {
     id_product: 4,
     name: "Mechanical Keyboard RGB",
     price: 159.99,
     description: "Professional gaming keyboard with RGB lighting and mechanical switches.",
-    image: "https://images.unsplash.com/photo-1587829191301-9651642fac16?w=500&h=500&fit=crop"
+    image: keyboardImage.src
   },
   {
     id_product: 5,
     name: "USB-C Hub Adapter",
     price: 39.99,
     description: "Multi-port USB-C hub with HDMI, USB 3.0, and SD card reader.",
-    image: "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=500&h=500&fit=crop"
+    image: adapterImage.src
   },
   {
     id_product: 6,
     name: "Phone Stand Premium",
     price: 24.99,
     description: "Adjustable aluminum phone stand with non-slip base. Compatible with all phones.",
-    image: "https://images.unsplash.com/photo-1586253408467-8f0ae5b5b113?w=500&h=500&fit=crop"
+    image: phoneImage.src
   }
 ];
+
+export let demoProducts = [...seedProducts];
 
 /**
  * Get all demo products
@@ -76,12 +87,18 @@ export function searchProducts(query) {
  * Returns the created product as if it were saved
  */
 export function createProduct(data) {
-  const newId = Math.max(...demoProducts.map(p => p.id_product), 0) + 1;
-  return {
+  const lastId = demoProducts.length > 0
+    ? Math.max(...demoProducts.map(p => p.id_product))
+    : 0;
+  const newId = lastId + 1;
+  const newProduct = {
     id_product: newId,
     ...data,
-    image: data.image || "https://images.unsplash.com/photo-1627979435509-be10e53dce6c?w=500&h=500&fit=crop"
+    image: data.image || demoFallbackImage
   };
+
+  demoProducts = [newProduct, ...demoProducts];
+  return newProduct;
 }
 
 /**
@@ -89,13 +106,20 @@ export function createProduct(data) {
  * Returns updated product
  */
 export function updateProduct(id, data) {
-  const product = getProductById(id);
-  if (!product) return null;
-  
-  return {
-    id_product: product.id_product,
-    ...data
+  const productIndex = demoProducts.findIndex(p => p.id_product === parseInt(id));
+  if (productIndex === -1) return null;
+
+  const updatedProduct = {
+    ...demoProducts[productIndex],
+    ...data,
+    id_product: demoProducts[productIndex].id_product
   };
+
+  demoProducts = demoProducts.map((product, index) =>
+    index === productIndex ? updatedProduct : product
+  );
+
+  return updatedProduct;
 }
 
 /**
@@ -103,5 +127,9 @@ export function updateProduct(id, data) {
  * Returns true if product exists
  */
 export function deleteProduct(id) {
-  return getProductById(id) !== undefined;
+  const productIndex = demoProducts.findIndex(p => p.id_product === parseInt(id));
+  if (productIndex === -1) return false;
+
+  demoProducts = demoProducts.filter(p => p.id_product !== parseInt(id));
+  return true;
 }

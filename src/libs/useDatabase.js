@@ -16,9 +16,11 @@ import {
   deleteProduct
 } from '@/data/demo';
 
-const IS_DEMO_MODE = process.env.DEMO_MODE === 'true';
+const DEFAULT_DEMO_MODE = process.env.DEMO_MODE !== 'false';
+let runtimeDemoMode = DEFAULT_DEMO_MODE;
 
 let conn = null;
+let connectionVerified = false;
 
 // Lazy load real database connection only if needed
 async function getConnection() {
@@ -44,76 +46,95 @@ async function getConnection() {
   }
 }
 
+async function ensureConnection(connection) {
+  if (connectionVerified) return true;
+
+  await connection.query('SELECT 1');
+  connectionVerified = true;
+  return true;
+}
+
+function getDemoDatabase() {
+  return {
+    mode: 'demo',
+    query: demoQuery,
+    getAll: getAllProducts,
+    getById: getProductById,
+    search: searchProducts,
+    create: createProduct,
+    update: updateProduct,
+    delete: deleteProduct,
+    close: () => Promise.resolve()
+  };
+}
+
 /**
  * Get database interface (demo or real)
  * Returns an object with unified methods for both modes
  */
 export async function getDatabase() {
-  if (IS_DEMO_MODE) {
-    return {
-      mode: 'demo',
-      query: demoQuery,
-      getAll: getAllProducts,
-      getById: getProductById,
-      search: searchProducts,
-      create: createProduct,
-      update: updateProduct,
-      delete: deleteProduct,
-      close: () => Promise.resolve()
-    };
+  if (runtimeDemoMode) {
+    return getDemoDatabase();
   }
 
-  const connection = await getConnection();
+  try {
+    const connection = await getConnection();
+    await ensureConnection(connection);
 
-  return {
-    mode: 'database',
-    query: realQuery,
-    getAll: async () => {
-      const [results] = await connection.query('SELECT * FROM product');
-      return results;
-    },
-    getById: async (id) => {
-      const [results] = await connection.query(
-        'SELECT * FROM product WHERE id_product = ?',
-        [parseInt(id)]
-      );
-      return results[0] || null;
-    },
-    search: async (query) => {
-      if (!query) {
+    return {
+      mode: 'database',
+      query: realQuery,
+      getAll: async () => {
         const [results] = await connection.query('SELECT * FROM product');
         return results;
-      }
-      const [results] = await connection.query(
-        'SELECT * FROM product WHERE LOWER(name) LIKE ? OR LOWER(description) LIKE ?',
-        [`%${query.toLowerCase()}%`, `%${query.toLowerCase()}%`]
-      );
-      return results;
-    },
-    create: async (data) => {
-      const [result] = await connection.query('INSERT INTO product SET ?', data);
-      return { id_product: result.insertId, ...data };
-    },
-    update: async (id, data) => {
-      await connection.query(
-        'UPDATE product SET ? WHERE id_product = ?',
-        [data, parseInt(id)]
-      );
-      const [results] = await connection.query(
-        'SELECT * FROM product WHERE id_product = ?',
-        [parseInt(id)]
-      );
-      return results[0] || null;
-    },
-    delete: async (id) => {
-      const [result] = await connection.query(
-        'DELETE FROM product WHERE id_product = ?',
-        [parseInt(id)]
-      );
-      return result.affectedRows > 0;
-    },
-    close: () => connection.end()
-  };
+      },
+      getById: async (id) => {
+        const [results] = await connection.query(
+          'SELECT * FROM product WHERE id_product = ?',
+          [parseInt(id)]
+        );
+        return results[0] || null;
+      },
+      search: async (query) => {
+        if (!query) {
+          const [results] = await connection.query('SELECT * FROM product');
+          return results;
+        }
+        const [results] = await connection.query(
+          'SELECT * FROM product WHERE LOWER(name) LIKE ? OR LOWER(description) LIKE ?',
+          [`%${query.toLowerCase()}%`, `%${query.toLowerCase()}%`]
+        );
+        return results;
+      },
+      create: async (data) => {
+        const [result] = await connection.query('INSERT INTO product SET ?', data);
+        return { id_product: result.insertId, ...data };
+      },
+      update: async (id, data) => {
+        await connection.query(
+          'UPDATE product SET ? WHERE id_product = ?',
+          [data, parseInt(id)]
+        );
+        const [results] = await connection.query(
+          'SELECT * FROM product WHERE id_product = ?',
+          [parseInt(id)]
+        );
+        return results[0] || null;
+      },
+      delete: async (id) => {
+        const [result] = await connection.query(
+          'DELETE FROM product WHERE id_product = ?',
+          [parseInt(id)]
+        );
+        return result.affectedRows > 0;
+      },
+      close: () => connection.end()
+    };
+  } catch (error) {
+    console.warn('Database unavailable, falling back to demo mode:', error?.message || error);
+    runtimeDemoMode = true;
+    return getDemoDatabase();
+  }
 }
 
 /**
@@ -137,13 +158,12 @@ async function realQuery(query, params = []) {
  * Check if running in demo mode
  */
 export function isDemoMode() {
-  return IS_DEMO_MODE;
+  return runtimeDemoMode;
 }
 
 /**
  * Get mode name for logging/display
  */
 export function getDatabaseMode() {
-  return IS_DEMO_MODE ? 'DEMO' : 'DATABASE';
+  return runtimeDemoMode ? 'DEMO' : 'DATABASE';
 }
-

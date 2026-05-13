@@ -15,11 +15,11 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-zinc-900 text-white py-3 mb-2">
-      <div className="container mx-auto flex justify-between items-center">
+    <nav className="bg-zinc-900/80 backdrop-blur text-white py-4 mb-2 border-b border-slate-800">
+      <div className="container mx-auto flex justify-between items-center px-6">
         <div className="flex items-center gap-4">
           <Link href="/">
-            <h3 className="text-3xl">Concept Store</h3>
+            <h3 className="text-2xl font-semibold">Concept Store</h3>
           </Link>
           
           {isDemoMode && (
@@ -29,9 +29,20 @@ function Navbar() {
           )}
         </div>
 
-        <ul>
+        <ul className="flex items-center gap-4">
           <li>
-            <Link href="/new" className="text-sky-500 hover:text-sky-400">
+            <Link
+              href="/products"
+              className="text-sm text-slate-200 hover:text-white"
+            >
+              Products
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/new"
+              className="rounded-full border border-slate-600 px-4 py-2 text-sm text-slate-100 transition hover:border-slate-400"
+            >
               New
             </Link>
           </li>
@@ -40,7 +51,7 @@ function Navbar() {
       
       {isDemoMode && (
         <div className="bg-orange-600 text-white text-sm text-center py-1">
-          ⚠️ Demo mode - changes are not saved. Configure MySQL to persist data.
+          ⚠️ Demo mode - changes are not saved and will reset on refresh.
         </div>
       )}
     </nav>
